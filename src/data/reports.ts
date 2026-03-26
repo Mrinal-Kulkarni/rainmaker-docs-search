@@ -1,4 +1,4 @@
-export type SourceType = 'NOAA Report' | 'NOAA Final Report' | 'State Permit' | 'Government Contract' | 'State Seasonal Report' | 'Academic Study' | 'Interstate Agreement' | 'FAA Waiver' | 'Federal Register' | 'State Proposal';
+export type SourceType = 'NOAA Report' | 'NOAA Final Report' | 'State Permit' | 'Government Contract' | 'State Seasonal Report' | 'Academic Study' | 'Interstate Agreement' | 'FAA Waiver' | 'Federal Register' | 'State Proposal' | 'Lobbying Disclosure' | 'Regulations.gov';
 
 export interface Report {
   id: string;
@@ -900,5 +900,293 @@ export const REPORTS: Report[] = [
     rainmakerRelated: false,
     lat: 28.5,
     lng: -99.0
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  //  NEW FAA WAIVERS (discovered in deep government website audit)
+  // ══════════════════════════════════════════════════════════════════════════
+  {
+    id: 'FAA-107W-00766',
+    designation: 'FAA Altitude Waiver — Mojave Desert CA (superseded)',
+    dateRange: 'Apr 29, 2025',
+    startYear: 2025,
+    activity: 'Regulatory authorization',
+    state: 'CA',
+    url: 'https://www.faa.gov/sites/faa.gov/files/107W-2025-00766-Sam-Kim-CoW.pdf',
+    sourceType: 'FAA Waiver',
+    operator: 'Rainmaker Technology Corporation',
+    agency: 'Federal Aviation Administration',
+    notes: 'Certificate of Waiver 107W-2025-00766. Altitude waiver up to 5,000 ft AGL for Mojave Desert, CA (35° 16\' 40.692" N, 117° 51\' 04.464" W, 0.25 NM radius). SUPERSEDED by 107W-2025-03025 (Oct 31, 2025). Must be combined with 107W-2025-00728. Responsible person: Sam Kim. Address: 115 Eucalyptus Drive, El Segundo, CA.',
+    rainmakerRelated: true,
+    lat: 35.28,
+    lng: -117.85
+  },
+  {
+    id: 'FAA-107W-03175',
+    designation: 'FAA Altitude Waiver — Bear River ID (15,000 ft MSL, superseded)',
+    dateRange: 'Sep 25, 2025',
+    startYear: 2025,
+    activity: 'Regulatory authorization',
+    state: 'ID',
+    url: 'https://www.faa.gov/sites/faa.gov/files/107W-2025-03175-Sam-Kim-CoW.pdf',
+    sourceType: 'FAA Waiver',
+    operator: 'Rainmaker Technology Corporation',
+    agency: 'Federal Aviation Administration',
+    notes: 'Certificate of Waiver 107W-2025-03175. Altitude waiver up to 15,000 ft MSL for Bear River, Idaho — three zones (ALPHA, BRAVO, CHARLIE) covering approx. 41°–43° N, 111°–113° W. SUPERSEDED by 107W-2025-04442 (Feb 4, 2026). Must be combined with 107W-2025-00728. Responsible person: Sam Kim. Address: 251 Little Falls Drive, Wilmington, DE.',
+    rainmakerRelated: true,
+    lat: 42.5,
+    lng: -111.5
+  },
+  {
+    id: 'FAA-107W-02285',
+    designation: 'FAA Altitude Waiver — Ogden UT (10,000 ft AGL, superseded)',
+    dateRange: 'Dec 8, 2025',
+    startYear: 2025,
+    activity: 'Regulatory authorization',
+    state: 'UT',
+    url: 'https://www.faa.gov/sites/faa.gov/files/107W-2025-02285-Sam-Kim-CoW.pdf',
+    sourceType: 'FAA Waiver',
+    operator: 'Rainmaker Technology Corporation',
+    agency: 'Federal Aviation Administration',
+    notes: 'Certificate of Waiver 107W-2025-02285. Altitude waiver up to 10,000 ft AGL (Flight Profile A) and 1,200 ft AGL (Flight Profile B) for Ogden, Utah (41° 12\' 04.62" N, 111° 55\' 01.50" W, 1.0 NM radius). SUPERSEDED by 107W-2025-02285A (Jan 16, 2026). Must contact KHIF Airfield Management (Hill AFB) 30 min prior to flight. Must be combined with 107W-2025-00728. Responsible person: Sam Kim.',
+    rainmakerRelated: true,
+    lat: 41.20,
+    lng: -111.92
+  },
+  {
+    id: 'FAA-107W-02285A',
+    designation: 'FAA Amended Altitude Waiver — Ogden UT (10,000 ft AGL)',
+    dateRange: 'Jan 16, 2026 – Mar 31, 2026',
+    startYear: 2026,
+    activity: 'Regulatory authorization',
+    state: 'UT',
+    url: 'https://www.faa.gov/media/108971',
+    sourceType: 'FAA Waiver',
+    operator: 'Rainmaker Technology Corporation',
+    agency: 'Federal Aviation Administration',
+    notes: 'Certificate of Waiver 107W-2025-02285A. Amends/supersedes 107W-2025-02285. Altitude up to 10,000 ft AGL (Flight Profile A), 1,200 ft AGL (Flight Profile B). Short validity: Jan 30 – Mar 31, 2026 (expired). Ogden, Utah — same geographic coordinates as predecessor. Must be combined with 107W-2025-00728. Contact KHIF airfield management at 801-777-1861. Responsible person: Sam Kim.',
+    rainmakerRelated: true,
+    lat: 41.20,
+    lng: -111.92
+  },
+  {
+    id: 'FAA-107W-04440A',
+    designation: 'FAA Master BVLOS Waiver v2 (current)',
+    dateRange: 'Feb 19, 2026 – Mar 31, 2029',
+    startYear: 2026,
+    activity: 'Regulatory authorization',
+    state: 'US',
+    url: 'https://www.faa.gov/media/110436',
+    sourceType: 'FAA Waiver',
+    operator: 'Rainmaker Technology Corporation',
+    agency: 'Federal Aviation Administration',
+    notes: 'Certificate of Waiver 107W-2025-04440A. Rainmaker\'s CURRENT master BVLOS operational waiver, replacing 107W-2025-00728 for new-generation operations. Waives §107.31 (BVLOS), §107.33(b)(c)(2) (Visual Observer), §107.51(c) (Visibility), §107.51(d) (Cloud Clearance). Unlike predecessor, has no fixed location — operations allowed wherever site selection performance procedures are met. Remote ID required. Downrange distance expanded to 5,280 feet. Signed by DEREK W HUFTY, Eastern Region. Responsible person: Sam Kim. Address: 251 Little Falls Dr, Wilmington, DE.',
+    rainmakerRelated: true,
+    lat: 39.7,
+    lng: -75.5
+  },
+  {
+    id: 'FAA-107W-03926',
+    designation: 'FAA Altitude Waiver — Pendleton OR (16,000 ft AGL)',
+    dateRange: 'Feb 9, 2026',
+    startYear: 2026,
+    activity: 'Regulatory authorization',
+    state: 'OR',
+    url: 'https://www.faa.gov/media/109881',
+    sourceType: 'FAA Waiver',
+    operator: 'Rainmaker Technology Corporation',
+    agency: 'Federal Aviation Administration',
+    notes: 'Certificate of Waiver 107W-2025-03926. Altitude waiver up to 16,000 ft AGL / 17,999 ft MSL for Pendleton, Oregon. Supersedes 107W-2025-02284. Three zones: Zone 1 "Butter" (45° 30\' 55" N, 119° 01\' 07" W, 9 NM radius), Zone 2 "Cabin" (45° 46\' 08" N, 118° 17\' 02" W, 10 NM radius), Zone 3 (polygon). Must be combined with 107W-2025-04440A. Must contact ZSE (Seattle ARTCC) 30 min prior at 253-351-3520. Expires Aug 31, 2027. Responsible person: Sam Kim.',
+    rainmakerRelated: true,
+    lat: 45.52,
+    lng: -119.02
+  },
+  {
+    id: 'FAA-107W-04442',
+    designation: 'FAA Altitude Waiver — Bear River ID v2 (15,000 ft MSL)',
+    dateRange: 'Feb 4, 2026',
+    startYear: 2026,
+    activity: 'Regulatory authorization',
+    state: 'ID',
+    url: 'https://www.faa.gov/media/109716',
+    sourceType: 'FAA Waiver',
+    operator: 'Rainmaker Technology Corporation',
+    agency: 'Federal Aviation Administration',
+    notes: 'Certificate of Waiver 107W-2025-04442. Altitude waiver up to 15,000 ft MSL for Bear River, Idaho. Supersedes 107W-2025-03175. Identical three-zone ALPHA/BRAVO/CHARLIE coverage as predecessor. Radius expanded to 1.0 NM from takeoff. Must be combined with 107W-2025-04440A. Expires Jun 10, 2027. Responsible person: Sam Kim. Address: 251 Little Falls Drive, Wilmington, DE.',
+    rainmakerRelated: true,
+    lat: 42.5,
+    lng: -111.5
+  },
+  {
+    id: 'FAA-107W-04468',
+    designation: 'FAA Altitude Waiver — Taos NM (12,000 ft AGL)',
+    dateRange: 'Feb 2, 2026',
+    startYear: 2026,
+    activity: 'Regulatory authorization',
+    state: 'NM',
+    url: 'https://www.faa.gov/media/109721',
+    sourceType: 'FAA Waiver',
+    operator: 'Rainmaker Technology Corporation',
+    agency: 'Federal Aviation Administration',
+    notes: 'Certificate of Waiver 107W-2025-04468. Altitude waiver up to 12,000 ft AGL / 17,999 ft MSL for Taos, New Mexico. NEW STATE for Rainmaker. Extensive polygon in Class E and G airspace under ZAB (Albuquerque ARTCC) and ZDV (Denver ARTCC) jurisdiction. Coordinates span approx. 35° 33\' N to 36° 57\' N, 105° 52\' W to 107° 08\' W. Seven designated no-fly areas within Taos. Must be combined with 107W-2025-04440A. Expires Dec 4, 2027. Responsible person: Sam Kim.',
+    rainmakerRelated: true,
+    lat: 36.41,
+    lng: -105.57
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  //  SENATE LOBBYING DISCLOSURES
+  // ══════════════════════════════════════════════════════════════════════════
+  {
+    id: 'SENATE-LDA-2024-2025',
+    designation: 'Senate Lobbying Disclosures — Rainmaker Technology Corporation',
+    dateRange: '2024 – 2025',
+    startYear: 2024,
+    activity: 'Federal lobbying',
+    state: 'DC',
+    url: 'https://lda.senate.gov/filings/public/filing/search/?client=Rainmaker+Technology&search=search',
+    sourceType: 'Lobbying Disclosure',
+    operator: 'Rainmaker Technology Corporation',
+    agency: 'U.S. Senate / Lobbying Disclosure Act',
+    notes: 'Four firms retained: Capitol Pillar LLC (~$230K, water resilience/Interior Dept, registered Jul 15, 2024), LSN Partners LLC (~$100K, drone waivers/FAA/drought control, registered Jul 15, 2024), Crossroads Strategies LLC ($90K, precipitation enhancement, registered Aug 12, 2025, terminated Aug 31, 2025), and Rainmaker in-house ($240K, registered Sep 24, 2025). Total ~$660K in reported lobbying spend (2024-2025). Lobbying escalated sharply after July 2025 Texas floods and Rep. Marjorie Taylor Greene\'s Clear Skies Act proposal.',
+    rainmakerRelated: true,
+    lat: 38.89,
+    lng: -77.01
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  //  REGULATIONS.GOV DOCKET
+  // ══════════════════════════════════════════════════════════════════════════
+  {
+    id: 'REGS-FAA-2025-1630',
+    designation: 'Regulations.gov Docket — FAA-2025-1630 (Hazmat Exemption)',
+    dateRange: 'Jul 29, 2025',
+    startYear: 2025,
+    activity: 'Regulatory docket',
+    state: 'US',
+    url: 'https://www.regulations.gov/docket/FAA-2025-1630',
+    sourceType: 'Regulations.gov',
+    operator: 'Rainmaker Technology Corporation',
+    agency: 'Federal Aviation Administration',
+    notes: 'Public docket for Rainmaker\'s petition for exemption from 14 CFR §107.36 (carriage of hazardous material — AgI flares on drones). 3 public comments received, including formal opposition from Air Line Pilots Association (ALPA) stating the petition "fails to demonstrate an equivalent level of safety" and poses "an extreme safety risk." FAA has not yet ruled as of March 2026.',
+    rainmakerRelated: true,
+    lat: 38.9,
+    lng: -77.0
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  //  UTAH SEASONAL REPORTS (NAWC-authored, water.utah.gov)
+  // ══════════════════════════════════════════════════════════════════════════
+  {
+    id: 'UT-EAST-SHORE-2024-25',
+    designation: 'East Shore Seasonal Report 2024-2025',
+    dateRange: 'Nov 1, 2024 – Apr 30, 2025',
+    startYear: 2024,
+    activity: 'Augment snowpack',
+    state: 'UT',
+    url: 'https://water.utah.gov/wp-content/uploads/2025/09/East-Shore-Seasonal-Report-2024-2025.pdf',
+    sourceType: 'State Seasonal Report',
+    operator: 'North American Weather Consultants (Rainmaker subsidiary)',
+    agency: 'Utah Division of Water Resources',
+    notes: 'Prepared by Cole Osborne (NAWC). First ever seeded year for East Shore program. 16 remotely operated generators in Weber, Morgan, and Davis Counties. 2,577 hours remote seeding + 117 hours manual. 34 seeded storm events. Mentions Rainmaker as NAWC parent company: "NAWC and its parent company Rainmaker Technologies will continue to develop alternative and more modern evaluation techniques."',
+    rainmakerRelated: true,
+    lat: 41.1,
+    lng: -112.0
+  },
+  {
+    id: 'UT-NORTHERN-2024-25',
+    designation: 'Northern Utah Seasonal Report 2024-2025',
+    dateRange: 'Nov 1, 2024 – Apr 30, 2025',
+    startYear: 2024,
+    activity: 'Augment snowpack',
+    state: 'UT',
+    url: 'https://water.utah.gov/wp-content/uploads/2025/09/Northern-Utah-Seasonal-Report-2024-2025-.pdf',
+    sourceType: 'State Seasonal Report',
+    operator: 'North American Weather Consultants (Rainmaker subsidiary)',
+    agency: 'Utah Division of Water Resources',
+    notes: 'Prepared by Cole Osborne (NAWC). Program running since 1989. 40 generators (16 manual, 24 remote). 34 seeded storm events; 1,985.5 manual hours + 1,715 remote hours. Mentions Rainmaker as NAWC parent: "NAWC\'s new parent company: Rainmaker Technologies." Historical effectiveness (1989-2022): 5-15% winter precipitation increase; long-term avg ~7%.',
+    rainmakerRelated: true,
+    lat: 41.5,
+    lng: -111.8
+  },
+  {
+    id: 'UT-WESTERN-UINTAS-2024-25',
+    designation: 'Western Uintas Seasonal Report 2024-2025',
+    dateRange: 'Nov 1, 2024 – Apr 30, 2025',
+    startYear: 2024,
+    activity: 'Augment snowpack',
+    state: 'UT',
+    url: 'https://water.utah.gov/wp-content/uploads/2025/09/Western-Uintas-2024-25.pdf',
+    sourceType: 'State Seasonal Report',
+    operator: 'North American Weather Consultants (Rainmaker subsidiary)',
+    agency: 'Utah Division of Water Resources',
+    notes: 'Prepared by David Yorty (NAWC). 28 winter seasons of cloud seeding in Western Uinta Range. 11 manual CNG sites + 7 remotely operated sites. 34 storm periods; 1,852.75 total seeding hours (1,261.75 manual, 591 remote). Targets upper Weber River and Provo River drainages. Estimated 3-13% snowpack increase; 6-10% streamflow increase (>12,000 AF).',
+    rainmakerRelated: true,
+    lat: 40.6,
+    lng: -111.2
+  },
+  {
+    id: 'UT-SIX-CREEKS-2024-25',
+    designation: 'Six Creeks Seasonal Report 2024-2025',
+    dateRange: 'Nov 15, 2024 – Apr 15, 2025',
+    startYear: 2024,
+    activity: 'Augment snowpack',
+    state: 'UT',
+    url: 'https://water.utah.gov/wp-content/uploads/2025/09/Six-Creeks-Report-2024-25.pdf',
+    sourceType: 'State Seasonal Report',
+    operator: 'North American Weather Consultants (Rainmaker subsidiary)',
+    agency: 'Utah Division of Water Resources',
+    notes: 'Prepared by David Yorty (NAWC). Targets City Creek, Emigration Creek, Parleys Creek, Mill Creek, Big Cottonwood Creek, Little Cottonwood Creek (above 6,000 ft MSL). 31 seeded storm periods; 933.75 cumulative generator hours; 8 CNG sites. Historical T/C evaluations: ~6% precipitation/snowpack increase. Streamflow increases: Little Cottonwood ~2,065-3,300 AF (8.4-13.4%).',
+    rainmakerRelated: true,
+    lat: 40.65,
+    lng: -111.78
+  },
+  {
+    id: 'UT-BOOK-CLIFFS-2024-25',
+    designation: 'Book Cliffs - Tavaputs Program Seasonal Report 2024-2025',
+    dateRange: 'Nov 1, 2024 – Apr 30, 2025',
+    startYear: 2024,
+    activity: 'Augment snowpack',
+    state: 'UT',
+    url: 'https://water.utah.gov/wp-content/uploads/2025/09/Book-Cliffs-Tavaputs-Program-Final-Report-2024-25.pdf',
+    sourceType: 'State Seasonal Report',
+    operator: 'North American Weather Consultants (Rainmaker subsidiary)',
+    agency: 'Utah Division of Water Resources',
+    notes: 'Prepared by Todd Flanagan (NAWC). Fifth season (fourth full season). 10 seeded storm events, 310.25 generator hours, 2,482g AgI. 5 manually operated CNGs (BC-1 through BC-5). Season below normal for storm activity and snowpack. NAWC estimated 3-5% seasonal increase: 0.3-0.5 in. additional precipitation, 10,000-20,000 acre-feet additional snowmelt runoff.',
+    rainmakerRelated: true,
+    lat: 39.8,
+    lng: -110.0
+  },
+  {
+    id: 'UT-HIGH-UINTAS-2024-25',
+    designation: 'High Uintas Seasonal Report 2024-2025',
+    dateRange: 'Dec 1, 2024 – Apr 30, 2025',
+    startYear: 2024,
+    activity: 'Augment snowpack',
+    state: 'UT',
+    url: 'https://water.utah.gov/wp-content/uploads/2025/09/High-Uintas-2024-25.pdf',
+    sourceType: 'State Seasonal Report',
+    operator: 'North American Weather Consultants (Rainmaker subsidiary)',
+    agency: 'Utah Division of Water Resources',
+    notes: 'Prepared by David Yorty (NAWC). Program running since 2002-2003. 18 manual CNGs + remote sites. 29 core storms; 1,261 manual hours + 464 remote hours. 23 core storm periods + 6 extension periods. Estimated 2-4% increase in April 1 snowpack (~36,000 acre-feet additional runoff). Target: south/north slopes Uinta Mountains above 8,000 ft. Lower Basin States fund extension periods.',
+    rainmakerRelated: true,
+    lat: 40.7,
+    lng: -110.4
+  },
+  {
+    id: 'UT-SOUTHERN-CENTRAL-2024-25',
+    designation: 'Southern & Central Utah Seasonal Report 2024-2025',
+    dateRange: 'Nov 15, 2024 – Apr 15, 2025',
+    startYear: 2024,
+    activity: 'Augment snowpack',
+    state: 'UT',
+    url: 'https://water.utah.gov/wp-content/uploads/2025/09/Southern-and-Central-Utah-2024-25.pdf',
+    sourceType: 'State Seasonal Report',
+    operator: 'North American Weather Consultants (Rainmaker subsidiary)',
+    agency: 'Utah Division of Water Resources',
+    notes: 'Prepared by David Yorty (NAWC). One of Utah\'s longest-running programs, active since mid-1970s. ~60 ground-based CNG sites; ~13 remote initially, converted ~26 manual to remote during season. 5,037.75 CNG hours (core, 21 storms) + 922.75 hours (extensions, 10 storms). Long-term results: 11-13% avg precipitation increase. Contributes runoff to the Colorado River; Lower Basin States fund extension periods.',
+    rainmakerRelated: true,
+    lat: 39.0,
+    lng: -111.5
   }
 ];
