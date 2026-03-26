@@ -2,8 +2,9 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Rainmaker Ops Search | Public Government Records',
-  description: 'Search publicly available NOAA weather modification reports and government documents for Rainmaker and cloud seeding operations — as discussed on the Shawn Ryan Show.',
+  title: 'Rainmaker Ops — Public Records',
+  description: 'Search publicly available government records for Rainmaker Technology Corp weather modification operations.',
+  icons: { icon: 'https://www.rainmaker.com/favicon.ico' },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

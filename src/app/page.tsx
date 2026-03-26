@@ -1,12 +1,11 @@
 'use client';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { REPORTS, SourceType } from '../data/reports';
-
-const PER_PAGE = 20;
+import MapView from '../components/MapView';
 
 const US_STATES = [
   { code: 'ALL', name: 'All States' },
-  { code: 'AL', name: 'Alabama' }, { code: 'AK', name: 'Alaska' }, { code: 'AZ', name: 'Arizona' },
+  { code: 'AK', name: 'Alaska' }, { code: 'AL', name: 'Alabama' }, { code: 'AZ', name: 'Arizona' },
   { code: 'AR', name: 'Arkansas' }, { code: 'CA', name: 'California' }, { code: 'CO', name: 'Colorado' },
   { code: 'CT', name: 'Connecticut' }, { code: 'DE', name: 'Delaware' }, { code: 'FL', name: 'Florida' },
   { code: 'GA', name: 'Georgia' }, { code: 'HI', name: 'Hawaii' }, { code: 'ID', name: 'Idaho' },
@@ -26,55 +25,48 @@ const US_STATES = [
 ];
 
 const SOURCE_TABS: { key: SourceType | 'All'; label: string; icon: string }[] = [
-  { key: 'All', label: 'All Sources', icon: '🗂️' },
-  { key: 'NOAA Report', label: 'NOAA Reports', icon: '☁️' },
-  { key: 'FAA NOTAM', label: 'FAA NOTAMs', icon: '✈️' },
+  { key: 'All', label: 'All Records', icon: '' },
+  { key: 'NOAA Report', label: 'NOAA Reports', icon: '☁' },
+  { key: 'FAA NOTAM', label: 'FAA NOTAMs', icon: '✈' },
   { key: 'State Permit', label: 'State Permits', icon: '📋' },
-  { key: 'Government Contract', label: 'Gov\'t Contracts', icon: '🏛️' },
-  { key: 'Legal Filing', label: 'Legal Filings', icon: '⚖️' },
-  { key: 'FOIA Record', label: 'FOIA Records', icon: '🔓' },
-  { key: 'Academic Study', label: 'Academic Studies', icon: '🔬' },
+  { key: 'Government Contract', label: 'Contracts', icon: '🏛' },
+  { key: 'Legal Filing', label: 'Legal', icon: '⚖' },
+  { key: 'FOIA Record', label: 'FOIA', icon: '🔓' },
+  { key: 'Academic Study', label: 'Studies', icon: '🔬' },
 ];
 
-const ACTIVITIES = ['All', 'Increase precipitation', 'Augment snowpack', 'Hail suppression', 'Fog dispersal', 'Litigation', 'Other'];
-
-const SOURCE_COLORS: Record<string, string> = {
-  'NOAA Report': '#1e4a80',
-  'FAA NOTAM': '#3d1a6e',
-  'State Permit': '#1a4d2e',
-  'Government Contract': '#4d3b00',
-  'Legal Filing': '#5c1a1a',
-  'FOIA Record': '#1a3d4d',
-  'Academic Study': '#2e1a4d',
-};
-
-const SOURCE_TEXT: Record<string, string> = {
-  'NOAA Report': '#7dd3fc',
-  'FAA NOTAM': '#c4b5fd',
-  'State Permit': '#86efac',
-  'Government Contract': '#fde68a',
-  'Legal Filing': '#fca5a5',
-  'FOIA Record': '#67e8f9',
-  'Academic Study': '#d8b4fe',
+const SOURCE_STYLE: Record<string, { bg: string; color: string }> = {
+  'NOAA Report':        { bg: 'rgba(79,142,255,0.12)', color: '#4f8eff' },
+  'FAA NOTAM':          { bg: 'rgba(181,123,255,0.12)', color: '#b57bff' },
+  'State Permit':       { bg: 'rgba(62,207,142,0.12)', color: '#3ecf8e' },
+  'Government Contract':{ bg: 'rgba(245,200,66,0.12)', color: '#f5c842' },
+  'Legal Filing':       { bg: 'rgba(255,90,90,0.12)',  color: '#ff5a5a' },
+  'FOIA Record':        { bg: 'rgba(56,189,248,0.12)', color: '#38bdf8' },
+  'Academic Study':     { bg: 'rgba(168,85,247,0.12)', color: '#a855f7' },
 };
 
 export default function Home() {
   const [query, setQuery] = useState('');
-  const [state, setState] = useState('ALL');
+  const [stateFilter, setStateFilter] = useState('ALL');
   const [activity, setActivity] = useState('All');
   const [sourceTab, setSourceTab] = useState<SourceType | 'All'>('All');
-  const [sort, setSort] = useState('newest');
-  const [page, setPage] = useState(1);
   const [rainmakerOnly, setRainmakerOnly] = useState(false);
-  const [yearMin, setYearMin] = useState(1995);
+  const [operator, setOperator] = useState('All Operators');
+  const [yearMin, setYearMin] = useState(1960);
   const [yearMax, setYearMax] = useState(2026);
   const [showFilters, setShowFilters] = useState(false);
+  const [view, setView] = useState<'list' | 'map'>('list');
+  const [expanded, setExpanded] = useState<string | null>(null);
 
   const allOperators = useMemo(() => {
     const ops = new Set(REPORTS.map(r => r.operator));
     return ['All Operators', ...Array.from(ops).sort()];
   }, []);
-  const [operator, setOperator] = useState('All Operators');
+
+  const allActivities = useMemo(() => {
+    const acts = new Set(REPORTS.map(r => r.activity));
+    return ['All', ...Array.from(acts).sort()];
+  }, []);
 
   const filtered = useMemo(() => {
     let data = [...REPORTS];
@@ -90,59 +82,51 @@ export default function Home() {
         (r.state && r.state.toLowerCase().includes(q))
       );
     }
-    if (state !== 'ALL') {
-      data = data.filter(r => r.state === state || r.state === '');
-    }
-    if (activity !== 'All') {
-      data = data.filter(r => r.activity.toLowerCase().includes(activity.toLowerCase()));
-    }
-    if (sourceTab !== 'All') {
-      data = data.filter(r => r.sourceType === sourceTab);
-    }
-    if (rainmakerOnly) {
-      data = data.filter(r => r.rainmakerRelated);
-    }
-    if (operator !== 'All Operators') {
-      data = data.filter(r => r.operator === operator);
-    }
+    if (stateFilter !== 'ALL') data = data.filter(r => r.state === stateFilter || r.state === '');
+    if (activity !== 'All') data = data.filter(r => r.activity === activity);
+    if (sourceTab !== 'All') data = data.filter(r => r.sourceType === sourceTab);
+    if (rainmakerOnly) data = data.filter(r => r.rainmakerRelated);
+    if (operator !== 'All Operators') data = data.filter(r => r.operator === operator);
     data = data.filter(r => r.startYear >= yearMin && r.startYear <= yearMax);
-    if (sort === 'newest') {
-      data.sort((a, b) => b.startYear - a.startYear);
-    } else if (sort === 'oldest') {
-      data.sort((a, b) => a.startYear - b.startYear);
-    } else {
-      data.sort((a, b) => a.designation.localeCompare(b.designation));
-    }
+    data.sort((a, b) => b.startYear - a.startYear);
     return data;
-  }, [query, state, activity, sourceTab, rainmakerOnly, operator, yearMin, yearMax, sort]);
+  }, [query, stateFilter, activity, sourceTab, rainmakerOnly, operator, yearMin, yearMax]);
 
-  const totalPages = Math.ceil(filtered.length / PER_PAGE);
-  const paginated = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
+  const sourceTabCounts = useMemo(() => {
+    const c: Record<string, number> = {};
+    REPORTS.forEach(r => { c[r.sourceType] = (c[r.sourceType] || 0) + 1; });
+    return c;
+  }, []);
 
-  function reset() {
-    setQuery(''); setState('ALL'); setActivity('All'); setSourceTab('All');
-    setRainmakerOnly(false); setOperator('All Operators'); setYearMin(1995); setYearMax(2026);
-    setSort('newest'); setPage(1);
-  }
+  const activeFilterCount = [stateFilter !== 'ALL', activity !== 'All', operator !== 'All Operators',
+    yearMin !== 1960 || yearMax !== 2026, rainmakerOnly].filter(Boolean).length;
 
-  const stateStats: Record<string, number> = {};
-  REPORTS.forEach(r => { if (r.state) stateStats[r.state] = (stateStats[r.state] || 0) + 1; });
-  const topState = Object.entries(stateStats).sort((a, b) => b[1] - a[1])[0]?.[0] || 'UT';
-  const rainmakerCount = REPORTS.filter(r => r.rainmakerRelated).length;
+  const reset = useCallback(() => {
+    setStateFilter('ALL'); setActivity('All'); setOperator('All Operators');
+    setYearMin(1960); setYearMax(2026); setRainmakerOnly(false);
+  }, []);
 
-  const sourceTabCounts: Record<string, number> = {};
-  REPORTS.forEach(r => { sourceTabCounts[r.sourceType] = (sourceTabCounts[r.sourceType] || 0) + 1; });
+  const stateLabel = (code: string) => US_STATES.find(s => s.code === code)?.name || code;
 
   return (
     <>
       <header>
         <div className="container">
           <div className="header-inner">
-            <div className="logo">
-              <div className="logo-icon">🌧</div>
-              <div className="logo-text">
-                Rainmaker Ops Search
-                <span className="logo-sub">Public Government Records</span>
+            <a href="/" className="logo">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://www.rainmaker.com/assets/rainmaker-logo.svg"
+                alt="Rainmaker"
+                onError={(e) => { (e.target as HTMLImageElement).style.display='none'; }}
+              />
+              <div className="logo-divider" />
+              <span className="logo-wordmark">Ops Search</span>
+            </a>
+            <div className="header-right">
+              <div className="header-pill">
+                <div className="dot-live" />
+                {REPORTS.length} records indexed
               </div>
             </div>
           </div>
@@ -152,208 +136,216 @@ export default function Home() {
       <main>
         <div className="container">
           <section className="hero">
-            <h1>Government Weather Modification Records</h1>
-            <p>
+            <p className="hero-eyebrow">Public government records &mdash; <span>Weather Modification Act 1972</span></p>
+            <h1>Rainmaker Operations Database</h1>
+            <p className="hero-sub">
               Search NOAA reports, FAA NOTAMs, state permits, government contracts, legal filings, FOIA records,
-              and academic studies — all public records under federal and state law.
+              and academic studies. Every operation is legally required to be disclosed.
             </p>
-            <div className="source-banner">
-              <span>📻</span>
-              As discussed on the <strong style={{marginLeft:4, marginRight:4}}>Shawn Ryan Show #207 & #217</strong> with Rainmaker CEO Augustus Doricko
-            </div>
-            <div className="search-wrap">
-              <input
-                className="search-input"
-                type="text"
-                placeholder="Search by project name, operator, agency, state, notes..."
-                value={query}
-                onChange={e => { setQuery(e.target.value); setPage(1); }}
-                autoFocus
-              />
-              <span className="search-icon">🔍</span>
+            <div className="hero-actions">
+              <a href="https://shawnryanshow.com/blogs/vigilance-elite-blogs/srs-207-augustus-doricko-ceo-of-rainmaker-manipulating-the-weather"
+                target="_blank" rel="noreferrer" className="btn-primary">
+                📻 SRS #207 — Augustus Doricko
+              </a>
+              <a href="https://www.youtube.com/watch?v=cJhqXAZP7Mk" target="_blank" rel="noreferrer" className="btn-ghost">
+                ▶ SRS #217 — Texas Floods Response
+              </a>
             </div>
           </section>
 
-          {/* Source Type Tabs */}
+          {/* Source Tabs */}
           <div className="source-tabs">
             {SOURCE_TABS.map(tab => (
-              <button
-                key={tab.key}
+              <button key={tab.key}
                 className={`source-tab${sourceTab === tab.key ? ' active' : ''}`}
-                onClick={() => { setSourceTab(tab.key); setPage(1); }}
-              >
-                <span>{tab.icon}</span>
+                onClick={() => { setSourceTab(tab.key); setExpanded(null); }}>
+                {tab.icon && <span>{tab.icon}</span>}
                 <span>{tab.label}</span>
-                {tab.key !== 'All' && (
-                  <span className="tab-count">{sourceTabCounts[tab.key] || 0}</span>
-                )}
+                <span className="tab-count">
+                  {tab.key === 'All' ? REPORTS.length : (sourceTabCounts[tab.key] || 0)}
+                </span>
               </button>
             ))}
           </div>
 
-          {/* Filter Row */}
-          <div className="filter-row">
-            <button className={`filter-toggle${showFilters ? ' open' : ''}`} onClick={() => setShowFilters(v => !v)}>
-              ⚙️ Filters {showFilters ? '▲' : '▼'}
+          {/* Toolbar */}
+          <div className="toolbar">
+            <div className="search-wrap">
+              <input className="search-input" type="text" placeholder="Search records..."
+                value={query} onChange={e => { setQuery(e.target.value); setExpanded(null); }} />
+              <span className="search-kbd">/</span>
+            </div>
+            <button className={`toolbar-btn${showFilters ? ' active' : ''}`}
+              onClick={() => setShowFilters(v => !v)}>
+              ⚙ Filters
+              {activeFilterCount > 0 && <span className="filter-count">{activeFilterCount}</span>}
             </button>
-            <label className="rm-toggle">
-              <input type="checkbox" checked={rainmakerOnly} onChange={e => { setRainmakerOnly(e.target.checked); setPage(1); }} />
-              <span>🌧 Rainmaker only</span>
-            </label>
-            <select className="sort-select" value={sort} onChange={e => { setSort(e.target.value); setPage(1); }}>
-              <option value="newest">Newest First</option>
-              <option value="oldest">Oldest First</option>
-              <option value="alpha">A–Z</option>
-            </select>
-            <button className="reset-btn" onClick={reset}>Reset</button>
+            <button className={`rm-toggle-btn${rainmakerOnly ? ' on' : ''}`}
+              onClick={() => { setRainmakerOnly(v => !v); setExpanded(null); }}>
+              {rainmakerOnly ? '● ' : '○ '}Rainmaker Only
+            </button>
+            <button className={`toolbar-btn${view === 'list' ? ' active' : ''}`}
+              onClick={() => setView('list')}>List</button>
+            <button className={`toolbar-btn${view === 'map' ? ' active' : ''}`}
+              onClick={() => setView('map')}>🗺 Map</button>
           </div>
 
+          {/* Filter Panel */}
           {showFilters && (
-            <div className="filters-panel">
-              <div className="filter-group">
-                <label className="filter-label">State</label>
-                <select className="filter-select" value={state} onChange={e => { setState(e.target.value); setPage(1); }}>
-                  {US_STATES.map(s => (
-                    <option key={s.code} value={s.code}>
-                      {s.name}{s.code !== 'ALL' && stateStats[s.code] ? ` (${stateStats[s.code]})` : ''}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="filter-group">
-                <label className="filter-label">Activity Type</label>
-                <select className="filter-select" value={activity} onChange={e => { setActivity(e.target.value); setPage(1); }}>
-                  {ACTIVITIES.map(a => <option key={a}>{a}</option>)}
-                </select>
-              </div>
-              <div className="filter-group">
-                <label className="filter-label">Operator</label>
-                <select className="filter-select" value={operator} onChange={e => { setOperator(e.target.value); setPage(1); }}>
-                  {allOperators.map(op => <option key={op}>{op}</option>)}
-                </select>
-              </div>
-              <div className="filter-group year-range">
-                <label className="filter-label">Year Range: {yearMin} – {yearMax}</label>
-                <div className="range-row">
-                  <input type="range" min={1960} max={2026} value={yearMin}
-                    onChange={e => { const v = parseInt(e.target.value); setYearMin(Math.min(v, yearMax)); setPage(1); }} />
-                  <input type="range" min={1960} max={2026} value={yearMax}
-                    onChange={e => { const v = parseInt(e.target.value); setYearMax(Math.max(v, yearMin)); setPage(1); }} />
+            <div className="filter-panel">
+              <div className="container">
+                <div className="filter-grid">
+                  <div className="filter-cell">
+                    <label className="filter-label">State</label>
+                    <select className="filter-select" value={stateFilter}
+                      onChange={e => { setStateFilter(e.target.value); setExpanded(null); }}>
+                      {US_STATES.map(s => (
+                        <option key={s.code} value={s.code}>{s.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="filter-cell">
+                    <label className="filter-label">Activity</label>
+                    <select className="filter-select" value={activity}
+                      onChange={e => { setActivity(e.target.value); setExpanded(null); }}>
+                      {allActivities.map(a => <option key={a}>{a}</option>)}
+                    </select>
+                  </div>
+                  <div className="filter-cell">
+                    <label className="filter-label">Operator</label>
+                    <select className="filter-select" value={operator}
+                      onChange={e => { setOperator(e.target.value); setExpanded(null); }}>
+                      {allOperators.map(op => <option key={op}>{op}</option>)}
+                    </select>
+                  </div>
+                  <div className="filter-cell year-range-cell">
+                    <label className="filter-label">
+                      Year Range — <span className="range-display">{yearMin} → {yearMax}</span>
+                    </label>
+                    <div className="range-row">
+                      <input type="range" min={1960} max={2026} value={yearMin}
+                        onChange={e => { const v = parseInt(e.target.value); setYearMin(Math.min(v, yearMax)); }} />
+                      <input type="range" min={1960} max={2026} value={yearMax}
+                        onChange={e => { const v = parseInt(e.target.value); setYearMax(Math.max(v, yearMin)); }} />
+                    </div>
+                  </div>
+                </div>
+                <div className="filter-footer">
+                  <div className="active-filters">
+                    {stateFilter !== 'ALL' && (
+                      <span className="filter-chip">📍 {stateLabel(stateFilter)}<span className="chip-x" onClick={() => setStateFilter('ALL')}>×</span></span>
+                    )}
+                    {activity !== 'All' && (
+                      <span className="filter-chip">⚡ {activity}<span className="chip-x" onClick={() => setActivity('All')}>×</span></span>
+                    )}
+                    {operator !== 'All Operators' && (
+                      <span className="filter-chip">🏢 {operator}<span className="chip-x" onClick={() => setOperator('All Operators')}>×</span></span>
+                    )}
+                    {(yearMin !== 1960 || yearMax !== 2026) && (
+                      <span className="filter-chip">📅 {yearMin}–{yearMax}<span className="chip-x" onClick={() => { setYearMin(1960); setYearMax(2026); }}>×</span></span>
+                    )}
+                  </div>
+                  {activeFilterCount > 0 && (
+                    <button className="clear-btn" onClick={reset}>Clear all</button>
+                  )}
                 </div>
               </div>
             </div>
           )}
 
-          {/* Stats */}
-          <div className="stats-row">
-            <div className="stat">
-              <span className="stat-num">{REPORTS.length}</span>
-              <span className="stat-label">Total Records</span>
+          {/* View Area */}
+          <div className="view-area">
+            <div className="results-meta">
+              <span className="results-count">
+                {filtered.length === 0 ? 'no records' : `${filtered.length} record${filtered.length !== 1 ? 's' : ''}`}
+              </span>
             </div>
-            <div className="stat">
-              <span className="stat-num">{rainmakerCount}</span>
-              <span className="stat-label">Rainmaker Ops</span>
-            </div>
-            <div className="stat">
-              <span className="stat-num">{Object.keys(stateStats).length}</span>
-              <span className="stat-label">States</span>
-            </div>
-            <div className="stat">
-              <span className="stat-num">{topState}</span>
-              <span className="stat-label">Most Active</span>
-            </div>
-            <div className="stat">
-              <span className="stat-num">{Object.keys(sourceTabCounts).length}</span>
-              <span className="stat-label">Source Types</span>
-            </div>
-          </div>
 
-          <div className="info-box">
-            <strong>📋 Why do these records exist?</strong> Under the <strong>Weather Modification Reporting Act of 1972</strong> (15 U.S.C. § 330) and <strong>15 CFR § 908</strong>, every cloud seeding operator must notify NOAA at least 10 days before operations. FAA NOTAMs are issued for flight safety. State permits are required in TX, UT, OR, AZ, WY, ID, ND, and others. All contracts above $10k are published on SAM.gov. <strong>Rainmaker CEO Augustus Doricko</strong> confirmed this on <a href="https://shawnryanshow.com/blogs/vigilance-elite-blogs/srs-207-augustus-doricko-ceo-of-rainmaker-manipulating-the-weather" target="_blank" rel="noreferrer">SRS #207</a> and <a href="https://www.youtube.com/watch?v=cJhqXAZP7Mk" target="_blank" rel="noreferrer">SRS #217</a>.
-          </div>
-
-          {/* Results */}
-          <div className="results-header">
-            <span className="results-count">
-              {filtered.length === 0
-                ? 'No results'
-                : `${filtered.length.toLocaleString()} record${filtered.length !== 1 ? 's' : ''} found`}
-            </span>
-          </div>
-
-          {paginated.length === 0 ? (
-            <div className="empty">
-              <div className="empty-icon">🌤</div>
-              <p>No records match your filters.</p>
-              <button className="reset-btn" style={{marginTop:12}} onClick={reset}>Clear all filters</button>
-            </div>
-          ) : (
-            <div className="results-grid">
-              {paginated.map(r => (
-                <div key={r.id} className="doc-card">
-                  <div className="card-main">
-                    <div className="card-top-row">
-                      <div className="doc-id">{r.id}</div>
-                      <span
-                        className="source-badge"
-                        style={{ background: SOURCE_COLORS[r.sourceType], color: SOURCE_TEXT[r.sourceType] }}
-                      >
-                        {SOURCE_TABS.find(t => t.key === r.sourceType)?.icon} {r.sourceType}
-                      </span>
-                      {r.rainmakerRelated && <span className="rm-badge">🌧 Rainmaker</span>}
+            {view === 'map' ? (
+              <MapView records={filtered} />
+            ) : filtered.length === 0 ? (
+              <div className="empty">
+                <div className="empty-icon">🌤</div>
+                <p>No records match your current filters.</p>
+              </div>
+            ) : (
+              <div className="records-grid">
+                {filtered.map(r => {
+                  const isExp = expanded === r.id;
+                  const style = SOURCE_STYLE[r.sourceType] || { bg: 'rgba(255,255,255,0.06)', color: '#a0a0a0' };
+                  return (
+                    <div key={r.id}>
+                      <div className={`record-row${isExp ? ' expanded' : ''}`}
+                        onClick={() => setExpanded(isExp ? null : r.id)}>
+                        <div className="record-left">
+                          <span className="record-id">{r.id}</span>
+                          <span className="source-pill" style={{ background: style.bg, color: style.color }}>
+                            {r.sourceType}
+                          </span>
+                          {r.state && <span className="record-state">{stateLabel(r.state)}</span>}
+                          <span className="record-year">{r.startYear}</span>
+                        </div>
+                        <div className="record-center">
+                          <span className="record-title">{r.designation}</span>
+                          <div className="record-meta">
+                            <span>{r.operator}</span>
+                            <span>{r.agency}</span>
+                            <span>{r.activity}</span>
+                          </div>
+                        </div>
+                        <div className="record-right">
+                          {r.rainmakerRelated && <span className="rm-dot" title="Rainmaker operation" />}
+                          <span className="chevron">▼</span>
+                        </div>
+                      </div>
+                      {isExp && (
+                        <div className="record-detail">
+                          <div className="detail-section">
+                            <span className="detail-label">Date Range</span>
+                            <span className="detail-value">{r.dateRange}</span>
+                          </div>
+                          <div className="detail-section">
+                            <span className="detail-label">Issuing Agency</span>
+                            <span className="detail-value">{r.agency}</span>
+                          </div>
+                          <div className="detail-section">
+                            <span className="detail-label">Operator</span>
+                            <span className="detail-value">{r.operator}</span>
+                          </div>
+                          <div className="detail-section">
+                            <span className="detail-label">Activity</span>
+                            <span className="detail-value">{r.activity}</span>
+                          </div>
+                          {r.notes && (
+                            <div className="detail-notes">{r.notes}</div>
+                          )}
+                          <a href={r.url} target="_blank" rel="noreferrer" className="detail-link"
+                            onClick={e => e.stopPropagation()}>
+                            <span>View source document — {r.agency}</span>
+                            <span className="detail-link-arrow">↗</span>
+                          </a>
+                        </div>
+                      )}
                     </div>
-                    <div className="doc-title">{r.designation}</div>
-                    <div className="doc-meta">
-                      {r.state && <span>📍 {US_STATES.find(s => s.code === r.state)?.name || r.state}</span>}
-                      <span>📅 {r.dateRange}</span>
-                      <span>🏢 {r.operator}</span>
-                      <span>🏛 {r.agency}</span>
-                    </div>
-                    {r.activity !== 'Other' && <div className="doc-activity">⚡ {r.activity}</div>}
-                    {r.notes && <div className="doc-notes">💡 {r.notes}</div>}
-                  </div>
-                  <div className="doc-action">
-                    <a href={r.url} target="_blank" rel="noreferrer" className="btn-pdf">
-                      View Source
-                    </a>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {totalPages > 1 && (
-            <div className="pagination">
-              {page > 1 && (
-                <button className="page-btn" onClick={() => { setPage(p => p-1); window.scrollTo({top:0,behavior:'smooth'}); }}>← Prev</button>
-              )}
-              {Array.from({length: Math.min(totalPages, 7)}, (_, i) => i + 1).map(p => (
-                <button
-                  key={p}
-                  className={`page-btn${page === p ? ' current' : ''}`}
-                  onClick={() => { setPage(p); window.scrollTo({top:0, behavior:'smooth'}); }}
-                >
-                  {p}
-                </button>
-              ))}
-              {totalPages > 7 && <span style={{color:'var(--muted)',alignSelf:'center'}}>…{totalPages}</span>}
-              {page < totalPages && (
-                <button className="page-btn" onClick={() => { setPage(p => p+1); window.scrollTo({top:0,behavior:'smooth'}); }}>Next →</button>
-              )}
-            </div>
-          )}
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </div>
       </main>
 
       <footer>
         <div className="container">
-          <p>
-            Data from <a href="https://library.noaa.gov/weather-climate/weather-modification-project-reports" target="_blank" rel="noreferrer">NOAA</a>,
-            {' '}<a href="https://notams.aim.faa.gov/notamSearch/" target="_blank" rel="noreferrer">FAA NOTAMs</a>,
-            {' '}<a href="https://sam.gov" target="_blank" rel="noreferrer">SAM.gov</a>,
-            {' '}<a href="https://www.tdlr.texas.gov/weather/weathermod.htm" target="_blank" rel="noreferrer">TDLR</a>, and state agencies.
-            Built for transparency · <a href="https://shawnryanshow.com" target="_blank" rel="noreferrer">Shawn Ryan Show</a>
-          </p>
+          <div className="footer-inner">
+            <span className="footer-left">© {new Date().getFullYear()} — Public records engine. Not affiliated with Rainmaker Technology Corp.</span>
+            <div className="footer-links">
+              <a href="https://library.noaa.gov/weather-climate/weather-modification-project-reports" target="_blank" rel="noreferrer">NOAA Archive</a>
+              <a href="https://sam.gov" target="_blank" rel="noreferrer">SAM.gov</a>
+              <a href="https://notams.aim.faa.gov/notamSearch/" target="_blank" rel="noreferrer">FAA NOTAMs</a>
+              <a href="https://www.rainmaker.com" target="_blank" rel="noreferrer">Rainmaker.com</a>
+            </div>
+          </div>
         </div>
       </footer>
     </>
