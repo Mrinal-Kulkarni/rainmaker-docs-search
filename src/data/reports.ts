@@ -1,4 +1,4 @@
-export type SourceType = 'NOAA Report' | 'NOAA Final Report' | 'State Permit' | 'Government Contract' | 'State Seasonal Report' | 'Academic Study' | 'Interstate Agreement';
+export type SourceType = 'NOAA Report' | 'NOAA Final Report' | 'State Permit' | 'Government Contract' | 'State Seasonal Report' | 'Academic Study' | 'Interstate Agreement' | 'FAA Waiver' | 'Federal Register' | 'State Proposal';
 
 export interface Report {
   id: string;
@@ -19,7 +19,59 @@ export interface Report {
 
 export const REPORTS: Report[] = [
   // ══════════════════════════════════════════════════════════════════════════
-  //  NOAA FY26 Q2  (Jan – Mar 2026)
+  //  NOAA FY26 Q2  (Jan – Mar 2026) — FINAL REPORTS
+  // ══════════════════════════════════════════════════════════════════════════
+  {
+    id: '2026TXTP-F',
+    designation: 'Trans-Pecos WMA — 2025 Season Final Report',
+    dateRange: 'Mar 1, 2025 – Nov 30, 2025',
+    startYear: 2025,
+    activity: 'Increase precipitation',
+    state: 'TX',
+    url: 'https://library.oarcloud.noaa.gov/noaa_documents.lib/OAR/OWAQ/Weather_Modification_Project/FY26/Q2/2026TXTP-F.pdf',
+    sourceType: 'NOAA Final Report',
+    operator: 'Rainmaker Technology Corp',
+    agency: 'NOAA',
+    notes: 'Final report for 2025 Trans-Pecos season. 40 modification days, 162.07 airborne hours. 6,292g silver iodide, 26,000g sodium chloride. Final activity Oct 24, 2025. Filed by Samuel Kim, Director of Regulatory, Jan 15, 2026.',
+    rainmakerRelated: true,
+    lat: 31.4,
+    lng: -103.5
+  },
+  {
+    id: '2026TXWT-F',
+    designation: 'West Texas WMA — 2025 Season Final Report',
+    dateRange: 'Mar 1, 2025 – Nov 30, 2025',
+    startYear: 2025,
+    activity: 'Increase precipitation',
+    state: 'TX',
+    url: 'https://library.oarcloud.noaa.gov/noaa_documents.lib/OAR/OWAQ/Weather_Modification_Project/FY26/Q2/2026TXWT-F.pdf',
+    sourceType: 'NOAA Final Report',
+    operator: 'Rainmaker Technology Corp',
+    agency: 'NOAA',
+    notes: 'Final report for 2025 West Texas season. 33 modification days, 100.20 airborne hours. 6,044.5g silver iodide, 30,500g sodium chloride. Dual-purpose: rainfall enhancement + hail suppression. Final activity Oct 24, 2025. Filed by Samuel Kim, Jan 15, 2026.',
+    rainmakerRelated: true,
+    lat: 31.9,
+    lng: -102.1
+  },
+  {
+    id: '2026UTS-F',
+    designation: 'Snowbird, Utah — 2025-2026 Final Report',
+    dateRange: 'Nov 1, 2025 – Dec 24, 2025',
+    startYear: 2025,
+    activity: 'Augment snowpack',
+    state: 'UT',
+    url: 'https://library.oarcloud.noaa.gov/noaa_documents.lib/OAR/OWAQ/Weather_Modification_Project/FY26/Q2/2026UTS-F.pdf',
+    sourceType: 'NOAA Final Report',
+    operator: 'Rainmaker Technology Corp',
+    agency: 'NOAA',
+    notes: 'Final report for Snowbird Resort cloud seeding. 8 modification days. Nov: 3 days, 24.5 hrs, 490g AgI. Dec: 5 days, 51.25 hrs, 1,025g AgI. Ground-based seeding. Filed by Samuel Kim, Jan 26, 2026.',
+    rainmakerRelated: true,
+    lat: 40.58,
+    lng: -111.65
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  //  NOAA FY26 Q2  (Jan – Mar 2026) — CONTINUATION REPORTS
   // ══════════════════════════════════════════════════════════════════════════
   {
     id: '2026UTCS-1-Q2',
@@ -463,6 +515,26 @@ export const REPORTS: Report[] = [
   },
 
   // ══════════════════════════════════════════════════════════════════════════
+  //  STATE PROPOSALS
+  // ══════════════════════════════════════════════════════════════════════════
+  {
+    id: 'UT-BRB-PROPOSAL-2025',
+    designation: 'Bear River Basin Cloud Seeding Proposal',
+    dateRange: 'Mar 2025',
+    startYear: 2025,
+    activity: 'Augment snowpack',
+    state: 'UT',
+    url: 'https://zerogeoengineering.com/wp-content/uploads/2025/08/UT-Bear-Proposal.Mar-2025.pdf',
+    sourceType: 'State Proposal',
+    operator: 'Rainmaker Technology Corporation',
+    agency: 'Utah Division of Water Resources',
+    notes: 'Formal proposal for the Bear River Basin interstate UAS cloud seeding pilot project. Outlines plan to use 32 Rainmaker Elijah V2 drones across the Bear River Basin to replenish the Great Salt Lake. Includes operational plan, suspension criteria, airspace evaluation, and equipment specs. Led to $3M Utah legislative appropriation and $950K Idaho Water Resource Board funding.',
+    rainmakerRelated: true,
+    lat: 41.5,
+    lng: -111.5
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════
   //  NAWC / PRE-ACQUISITION REPORTS (operated by NAWC, now owned by Rainmaker)
   // ══════════════════════════════════════════════════════════════════════════
   {
@@ -496,6 +568,102 @@ export const REPORTS: Report[] = [
     rainmakerRelated: true,
     lat: 39.8,
     lng: -110.0
+  },
+  {
+    id: '2025UTCS-F',
+    designation: 'Southern & Central Utah — Final Report (Pre-Acquisition)',
+    dateRange: 'Nov 1, 2024 – Dec 31, 2024',
+    startYear: 2024,
+    activity: 'Augment snowpack',
+    state: 'UT',
+    url: 'https://library.oarcloud.noaa.gov/noaa_documents.lib/OAR/OWAQ/Weather_Modification_Project/FY25/Q2/2025UTCS-1.pdf',
+    sourceType: 'NOAA Final Report',
+    operator: 'North American Weather Consultants (Rainmaker subsidiary)',
+    agency: 'NOAA',
+    notes: 'Filed by Todd Flanagan (NAWC). 20 modification days. 1,847.25 ground apparatus hours. 19,159g AgI total. Ground-based seeding covering Southern and Central Utah. NAWC acquired by Rainmaker Oct 2024.',
+    rainmakerRelated: true,
+    lat: 39.0,
+    lng: -111.5
+  },
+  {
+    id: '2025UTHU-F',
+    designation: 'High Uintas — Final Report (Pre-Acquisition)',
+    dateRange: 'Nov 1, 2024 – Dec 31, 2024',
+    startYear: 2024,
+    activity: 'Augment snowpack',
+    state: 'UT',
+    url: 'https://library.oarcloud.noaa.gov/noaa_documents.lib/OAR/OWAQ/Weather_Modification_Project/FY25/Q2/2025UTHU-1.pdf',
+    sourceType: 'NOAA Final Report',
+    operator: 'North American Weather Consultants (Rainmaker subsidiary)',
+    agency: 'NOAA',
+    notes: 'Filed by David Yorty (NAWC). 17 modification days. 643 ground hours. 7,728g AgI total. High Uintas region of Duchesne/Uinta counties. NAWC acquired by Rainmaker Oct 2024.',
+    rainmakerRelated: true,
+    lat: 40.7,
+    lng: -110.4
+  },
+  {
+    id: '2025UTNU-F',
+    designation: 'Northern Utah — Final Report (Pre-Acquisition)',
+    dateRange: 'Nov 1, 2024 – Dec 31, 2024',
+    startYear: 2024,
+    activity: 'Augment snowpack',
+    state: 'UT',
+    url: 'https://library.oarcloud.noaa.gov/noaa_documents.lib/OAR/OWAQ/Weather_Modification_Project/FY25/Q2/2025UTNU-1.pdf',
+    sourceType: 'NOAA Final Report',
+    operator: 'North American Weather Consultants (Rainmaker subsidiary)',
+    agency: 'NOAA',
+    notes: 'Filed by Cole Osborne (NAWC). 24 modification days. 969 ground hours. 7,752g AgI total. Northern Utah. NAWC acquired by Rainmaker Oct 2024.',
+    rainmakerRelated: true,
+    lat: 41.5,
+    lng: -111.8
+  },
+  {
+    id: '2025UTSCS-F',
+    designation: 'Six Creeks — Final Report (Pre-Acquisition)',
+    dateRange: 'Nov 15, 2024 – Dec 31, 2024',
+    startYear: 2024,
+    activity: 'Augment snowpack',
+    state: 'UT',
+    url: 'https://library.oarcloud.noaa.gov/noaa_documents.lib/OAR/OWAQ/Weather_Modification_Project/FY25/Q2/2025UTSCS-1.pdf',
+    sourceType: 'NOAA Final Report',
+    operator: 'North American Weather Consultants (Rainmaker subsidiary)',
+    agency: 'NOAA',
+    notes: 'Filed by David Yorty (NAWC). 20 modification days. 253 ground hours. 2,024g AgI total. Six Creeks region. NAWC acquired by Rainmaker Oct 2024.',
+    rainmakerRelated: true,
+    lat: 39.6,
+    lng: -111.3
+  },
+  {
+    id: '2025UTWU-F',
+    designation: 'Western Uintas — Final Report (Pre-Acquisition)',
+    dateRange: 'Nov 1, 2024 – Dec 31, 2024',
+    startYear: 2024,
+    activity: 'Augment snowpack',
+    state: 'UT',
+    url: 'https://library.oarcloud.noaa.gov/noaa_documents.lib/OAR/OWAQ/Weather_Modification_Project/FY25/Q2/2025UTWU-1.pdf',
+    sourceType: 'NOAA Final Report',
+    operator: 'North American Weather Consultants (Rainmaker subsidiary)',
+    agency: 'NOAA',
+    notes: 'Filed by David Yorty (NAWC). 11,039g AgI total. Weber/Provo River Basins. Ground-based seeding. NAWC acquired by Rainmaker Oct 2024.',
+    rainmakerRelated: true,
+    lat: 40.6,
+    lng: -111.2
+  },
+  {
+    id: '2025UTS-F',
+    designation: 'Snowbird Resort — Final Report (Pre-Acquisition)',
+    dateRange: 'Nov 1, 2024 – Dec 17, 2024',
+    startYear: 2024,
+    activity: 'Augment snowpack',
+    state: 'UT',
+    url: 'https://library.oarcloud.noaa.gov/noaa_documents.lib/OAR/OWAQ/Weather_Modification_Project/FY25/Q2/2025UTS-F.pdf',
+    sourceType: 'NOAA Final Report',
+    operator: 'North American Weather Consultants (Rainmaker subsidiary)',
+    agency: 'NOAA',
+    notes: 'Filed by David Yorty (NAWC), Dec 24, 2024. Snowbird Resort ground-based seeding. Final activity Dec 17, 2024. The FY26 Snowbird report (2026UTS-F) was filed under Rainmaker directly. NAWC acquired by Rainmaker Oct 2024.',
+    rainmakerRelated: true,
+    lat: 40.58,
+    lng: -111.65
   },
 
   // ══════════════════════════════════════════════════════════════════════════
@@ -551,8 +719,72 @@ export const REPORTS: Report[] = [
   },
 
   // ══════════════════════════════════════════════════════════════════════════
-  //  LOBBYING & REGULATORY FILINGS
+  //  FAA WAIVERS & FEDERAL REGULATORY FILINGS
   // ══════════════════════════════════════════════════════════════════════════
+  {
+    id: 'FAA-107W-00728',
+    designation: 'FAA BVLOS + In-Cloud Operations Waiver',
+    dateRange: 'Mar 14, 2025',
+    startYear: 2025,
+    activity: 'Regulatory authorization',
+    state: 'US',
+    url: 'https://www.faa.gov/media/91776',
+    sourceType: 'FAA Waiver',
+    operator: 'Rainmaker Technology Corporation',
+    agency: 'Federal Aviation Administration',
+    notes: 'Certificate of Waiver 107W-2025-00728. Waives 14 CFR §107.31 (Visual Line of Sight), §107.33(b)(c)(2) (Visual Observer), §107.51(c) (Visibility <3 statute miles), §107.51(d) (Cloud Clearance). Authorizes sUAS BVLOS operations, in-cloud operations, and reduced visibility flights. Responsible person: Sam Kim. Issued from 115 Eucalyptus Drive, El Segundo, CA.',
+    rainmakerRelated: true,
+    lat: 33.9,
+    lng: -118.4
+  },
+  {
+    id: 'FAA-107W-00730',
+    designation: 'FAA High-Altitude Operations Waiver (5,000 ft AGL)',
+    dateRange: 'May 16, 2025',
+    startYear: 2025,
+    activity: 'Regulatory authorization',
+    state: 'US',
+    url: 'https://www.faa.gov/media/95001',
+    sourceType: 'FAA Waiver',
+    operator: 'Rainmaker Technology Corporation',
+    agency: 'Federal Aviation Administration',
+    notes: 'Certificate of Waiver 107W-2025-00730. Waives 14 CFR §107.51(b) — allows sUAS operations up to 5,000 ft AGL, above the standard 400 ft limit. Responsible person: Sam Kim.',
+    rainmakerRelated: true,
+    lat: 33.9,
+    lng: -118.4
+  },
+  {
+    id: 'FAA-107W-03025',
+    designation: 'FAA Amended Altitude Waiver (5,000 ft AGL)',
+    dateRange: 'Oct 31, 2025',
+    startYear: 2025,
+    activity: 'Regulatory authorization',
+    state: 'US',
+    url: 'https://www.faa.gov/media/106576',
+    sourceType: 'FAA Waiver',
+    operator: 'Rainmaker Technology Corporation',
+    agency: 'Federal Aviation Administration',
+    notes: 'Certificate of Waiver 107W-2025-03025. Amends/supersedes waiver 107W-2025-00766. Waives 14 CFR §107.51(b) for altitude up to 5,000 ft AGL. Address updated to 251 Little Falls Drive, Wilmington, DE (corporate restructuring). Responsible person: Sam Kim.',
+    rainmakerRelated: true,
+    lat: 39.7,
+    lng: -75.5
+  },
+  {
+    id: 'FAA-PET-14285',
+    designation: 'FAA Petition for Exemption — Hazardous Materials (AgI Flares)',
+    dateRange: 'Jul 29, 2025',
+    startYear: 2025,
+    activity: 'Regulatory authorization',
+    state: 'US',
+    url: 'https://www.federalregister.gov/documents/2025/07/29/2025-14285/petition-for-exemption-summary-of-petition-received-rainmaker-technology-corporation',
+    sourceType: 'Federal Register',
+    operator: 'Rainmaker Technology Corporation',
+    agency: 'Federal Aviation Administration',
+    notes: 'Docket 2025-14285. Rainmaker petitioning FAA for exemption to carry hazardous materials (silver iodide flares) on small drones — not covered by existing Part 107 rules. Air Line Pilots Association (ALPA) filed opposition in Sep 2025 citing safety concerns. FAA had not yet ruled as of early 2026. Published in Federal Register Jul 29, 2025.',
+    rainmakerRelated: true,
+    lat: 38.9,
+    lng: -77.0
+  },
   {
     id: 'EPA-VISIT-2025',
     designation: 'Rainmaker EPA Headquarters Visit — Silver Iodide Regulation',
