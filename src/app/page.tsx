@@ -100,6 +100,7 @@ export default function Home() {
     operator !== 'All Operators' ||
     yearMin !== YEAR_MIN ||
     yearMax !== YEAR_MAX;
+
   const activeCount = [
     stateFilter !== 'ALL',
     sourceType !== 'All',
@@ -145,6 +146,7 @@ export default function Home() {
   }).sort((left, right) => right.startYear - left.startYear);
 
   const resultsLabel = `${filtered.length} record${filtered.length === 1 ? '' : 's'}`;
+  const sourceFamilyCount = SOURCE_TYPE_OPTIONS.length - 1;
 
   function resetFilters() {
     setStateFilter('ALL');
@@ -189,257 +191,301 @@ export default function Home() {
               className="brand-wordmark"
             />
           </a>
-          <p className="brand-caption">Operations Search / public records archive</p>
+
+          <div className="header-meta">
+            <span className="header-pill">Public records</span>
+            <span className="header-copy">Operations Search</span>
+          </div>
         </div>
       </header>
 
       <main className="shell site-main">
-        <section className="hero-grid">
+        <section className="hero-stage fade-up">
           <div className="hero-copy">
-            <p className="eyebrow">Rainmaker public records index</p>
-            <h1>Search Rainmaker-linked weather modification filings.</h1>
+            <p className="eyebrow">Rainmaker operations archive</p>
+            <h1>Search Rainmaker-linked weather modification records.</h1>
             <p className="hero-text">
-              A stripped-down archive of NOAA reports, state permits, contracts, and related
-              public records tied to Rainmaker Technology Corporation operations.
+              A streamlined archive of NOAA reports, state permits, government contracts, and
+              related public records tied to Rainmaker Technology Corporation operations.
             </p>
+
+            <div className="hero-actions">
+              <button
+                type="button"
+                className="button button-primary"
+                onClick={() => searchRef.current?.focus()}
+              >
+                Focus search
+              </button>
+              <button
+                type="button"
+                className="button button-secondary"
+                onClick={() => setShowFilters(true)}
+              >
+                Open filters
+              </button>
+            </div>
           </div>
 
-          <div className="hero-panel">
-            <div className="hero-panel-row">
-              <span>Scope</span>
-              <strong>Rainmaker-linked records only</strong>
+          <aside className="hero-aside">
+            <div className="signal-card">
+              <span className="signal-label">Coverage</span>
+              <strong>Rainmaker-linked filings only</strong>
             </div>
-            <div className="hero-panel-row">
-              <span>Archive window</span>
+            <div className="signal-card">
+              <span className="signal-label">Archive window</span>
               <strong>
                 {YEAR_MIN} to {YEAR_MAX}
               </strong>
             </div>
-            <div className="hero-panel-row">
-              <span>Sources</span>
-              <strong>NOAA / permits / contracts / studies</strong>
+            <div className="signal-card">
+              <span className="signal-label">Source families</span>
+              <strong>{sourceFamilyCount} source types indexed</strong>
             </div>
-          </div>
+            <div className="signal-card signal-card-accent">
+              <span className="signal-label">Source access</span>
+              <strong>PDF links appear only inside expanded record detail</strong>
+            </div>
+          </aside>
         </section>
 
-        <section className="search-frame">
-          <div className="toolbar">
-            <label className="search-field" htmlFor="record-search">
-              <span className="toolbar-label">Search</span>
-              <input
-                id="record-search"
-                ref={searchRef}
-                className="search-input"
-                type="text"
-                placeholder="Operator, agency, record ID, activity, note"
-                value={query}
-                onChange={(event) => {
-                  setQuery(event.target.value);
-                  setExpanded(null);
-                }}
-              />
-            </label>
+        <section className="search-shell fade-up fade-up-delay">
+          <div className="search-surface">
+            <div className="search-row">
+              <label className="search-field" htmlFor="record-search">
+                <span className="toolbar-label">Search the archive</span>
+                <input
+                  id="record-search"
+                  ref={searchRef}
+                  className="search-input"
+                  type="text"
+                  placeholder="Search by operator, agency, record ID, activity, note"
+                  value={query}
+                  onChange={(event) => {
+                    setQuery(event.target.value);
+                    setExpanded(null);
+                  }}
+                />
+              </label>
 
-            <div className="toolbar-actions">
-              <button
-                type="button"
-                className={`toolbar-button${showFilters ? ' is-active' : ''}`}
-                onClick={() => setShowFilters((current) => !current)}
-              >
-                Filters
-                {hasActiveFilters ? <span className="count-pill">{activeCount}</span> : null}
-              </button>
-              {(query || hasActiveFilters) && (
+              <div className="toolbar-actions">
                 <button
                   type="button"
-                  className="toolbar-button toolbar-button-secondary"
-                  onClick={() => {
-                    clearSearch();
-                    resetFilters();
-                  }}
+                  className={`button button-secondary${showFilters ? ' is-active' : ''}`}
+                  onClick={() => setShowFilters((current) => !current)}
                 >
-                  Reset
+                  Filters
+                  {hasActiveFilters ? <span className="count-pill">{activeCount}</span> : null}
                 </button>
-              )}
-            </div>
-          </div>
 
-          {showFilters && (
-            <div className="filters-panel">
-              <div className="filter-grid">
-                <label className="filter-field">
-                  <span className="toolbar-label">State</span>
-                  <select
-                    value={stateFilter}
-                    onChange={(event) => {
-                      setStateFilter(event.target.value);
-                      setExpanded(null);
+                {(query || hasActiveFilters) && (
+                  <button
+                    type="button"
+                    className="button button-ghost"
+                    onClick={() => {
+                      clearSearch();
+                      resetFilters();
                     }}
                   >
-                    {US_STATES.map((state) => (
-                      <option key={state.code} value={state.code}>
-                        {state.name}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-
-                <label className="filter-field">
-                  <span className="toolbar-label">Source type</span>
-                  <select
-                    value={sourceType}
-                    onChange={(event) => {
-                      setSourceType(event.target.value as SourceFilter);
-                      setExpanded(null);
-                    }}
-                  >
-                    {SOURCE_TYPE_OPTIONS.map((option) => (
-                      <option key={option} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-
-                <label className="filter-field">
-                  <span className="toolbar-label">Operator</span>
-                  <select
-                    value={operator}
-                    onChange={(event) => {
-                      setOperator(event.target.value);
-                      setExpanded(null);
-                    }}
-                  >
-                    {OPERATOR_OPTIONS.map((option) => (
-                      <option key={option} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-
-                <label className="filter-field">
-                  <span className="toolbar-label">From year</span>
-                  <select
-                    value={yearMin}
-                    onChange={(event) => handleYearMinChange(Number(event.target.value))}
-                  >
-                    {YEAR_OPTIONS.map((year) => (
-                      <option key={year} value={year}>
-                        {year}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-
-                <label className="filter-field">
-                  <span className="toolbar-label">To year</span>
-                  <select
-                    value={yearMax}
-                    onChange={(event) => handleYearMaxChange(Number(event.target.value))}
-                  >
-                    {YEAR_OPTIONS.map((year) => (
-                      <option key={year} value={year}>
-                        {year}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              </div>
-
-              {hasActiveFilters && (
-                <div className="active-strip">
-                  <div className="chip-row">
-                    {stateFilter !== 'ALL' && (
-                      <button
-                        type="button"
-                        className="filter-chip"
-                        onClick={() => {
-                          setStateFilter('ALL');
-                          setExpanded(null);
-                        }}
-                      >
-                        State: {getStateLabel(stateFilter)} <span>×</span>
-                      </button>
-                    )}
-                    {sourceType !== 'All' && (
-                      <button
-                        type="button"
-                        className="filter-chip"
-                        onClick={() => {
-                          setSourceType('All');
-                          setExpanded(null);
-                        }}
-                      >
-                        Source: {sourceType} <span>×</span>
-                      </button>
-                    )}
-                    {operator !== 'All Operators' && (
-                      <button
-                        type="button"
-                        className="filter-chip"
-                        onClick={() => {
-                          setOperator('All Operators');
-                          setExpanded(null);
-                        }}
-                      >
-                        Operator: {operator} <span>×</span>
-                      </button>
-                    )}
-                    {(yearMin !== YEAR_MIN || yearMax !== YEAR_MAX) && (
-                      <button
-                        type="button"
-                        className="filter-chip"
-                        onClick={() => {
-                          setYearMin(YEAR_MIN);
-                          setYearMax(YEAR_MAX);
-                          setExpanded(null);
-                        }}
-                      >
-                        Years: {yearMin} to {yearMax} <span>×</span>
-                      </button>
-                    )}
-                  </div>
-
-                  <button type="button" className="inline-reset" onClick={resetFilters}>
-                    Clear filters
+                    Reset
                   </button>
-                </div>
-              )}
+                )}
+              </div>
             </div>
-          )}
+
+            <div className="search-caption-row">
+              <p className="search-caption">
+                Filter by state, source type, operator, or year range to narrow the archive before
+                expanding any record.
+              </p>
+            </div>
+
+            {showFilters && (
+              <div className="filters-panel">
+                <div className="filter-grid">
+                  <label className="filter-field">
+                    <span className="toolbar-label">State</span>
+                    <select
+                      value={stateFilter}
+                      onChange={(event) => {
+                        setStateFilter(event.target.value);
+                        setExpanded(null);
+                      }}
+                    >
+                      {US_STATES.map((state) => (
+                        <option key={state.code} value={state.code}>
+                          {state.name}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+
+                  <label className="filter-field">
+                    <span className="toolbar-label">Source type</span>
+                    <select
+                      value={sourceType}
+                      onChange={(event) => {
+                        setSourceType(event.target.value as SourceFilter);
+                        setExpanded(null);
+                      }}
+                    >
+                      {SOURCE_TYPE_OPTIONS.map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+
+                  <label className="filter-field">
+                    <span className="toolbar-label">Operator</span>
+                    <select
+                      value={operator}
+                      onChange={(event) => {
+                        setOperator(event.target.value);
+                        setExpanded(null);
+                      }}
+                    >
+                      {OPERATOR_OPTIONS.map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+
+                  <label className="filter-field">
+                    <span className="toolbar-label">From year</span>
+                    <select
+                      value={yearMin}
+                      onChange={(event) => handleYearMinChange(Number(event.target.value))}
+                    >
+                      {YEAR_OPTIONS.map((year) => (
+                        <option key={year} value={year}>
+                          {year}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+
+                  <label className="filter-field">
+                    <span className="toolbar-label">To year</span>
+                    <select
+                      value={yearMax}
+                      onChange={(event) => handleYearMaxChange(Number(event.target.value))}
+                    >
+                      {YEAR_OPTIONS.map((year) => (
+                        <option key={year} value={year}>
+                          {year}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
+
+                {hasActiveFilters && (
+                  <div className="active-strip">
+                    <div className="chip-row">
+                      {stateFilter !== 'ALL' && (
+                        <button
+                          type="button"
+                          className="filter-chip"
+                          onClick={() => {
+                            setStateFilter('ALL');
+                            setExpanded(null);
+                          }}
+                        >
+                          State: {getStateLabel(stateFilter)}
+                          <span>×</span>
+                        </button>
+                      )}
+
+                      {sourceType !== 'All' && (
+                        <button
+                          type="button"
+                          className="filter-chip"
+                          onClick={() => {
+                            setSourceType('All');
+                            setExpanded(null);
+                          }}
+                        >
+                          Source: {sourceType}
+                          <span>×</span>
+                        </button>
+                      )}
+
+                      {operator !== 'All Operators' && (
+                        <button
+                          type="button"
+                          className="filter-chip"
+                          onClick={() => {
+                            setOperator('All Operators');
+                            setExpanded(null);
+                          }}
+                        >
+                          Operator: {operator}
+                          <span>×</span>
+                        </button>
+                      )}
+
+                      {(yearMin !== YEAR_MIN || yearMax !== YEAR_MAX) && (
+                        <button
+                          type="button"
+                          className="filter-chip"
+                          onClick={() => {
+                            setYearMin(YEAR_MIN);
+                            setYearMax(YEAR_MAX);
+                            setExpanded(null);
+                          }}
+                        >
+                          Years: {yearMin} to {yearMax}
+                          <span>×</span>
+                        </button>
+                      )}
+                    </div>
+
+                    <button type="button" className="inline-reset" onClick={resetFilters}>
+                      Clear filters
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </section>
 
-        <section className="results-frame">
+        <section className="results-shell fade-up fade-up-delay-2">
           <div className="results-header">
             <div>
               <p className="eyebrow">Archive</p>
               <h2>{hasStartedSearch ? resultsLabel : 'No records loaded yet'}</h2>
             </div>
             <p className="results-note">
-              PDF and source links stay hidden until a record is expanded.
+              Search stays intentionally empty on first load. Expand a record to reveal source
+              access.
             </p>
           </div>
 
           {!hasStartedSearch ? (
             <div className="empty-state">
               <p className="empty-kicker">Start with a filter</p>
-              <h3>Pick a state, source type, operator, year range, or enter a keyword.</h3>
+              <h3>Use the filter drawer or search field to load the archive.</h3>
               <p>
-                The archive stays empty on first load so the search starts with intent instead of
-                noise.
+                Start with a state, source type, operator, or a year range. The archive remains
+                quiet until you ask for a slice of it.
               </p>
+
               <div className="empty-actions">
                 <button
                   type="button"
-                  className="toolbar-button is-active"
+                  className="button button-primary"
                   onClick={() => setShowFilters(true)}
                 >
                   Open filters
                 </button>
                 <button
                   type="button"
-                  className="toolbar-button toolbar-button-secondary"
+                  className="button button-secondary"
                   onClick={() => searchRef.current?.focus()}
                 >
                   Focus search
@@ -465,12 +511,16 @@ export default function Home() {
                       aria-expanded={isOpen}
                       onClick={() => setExpanded(isOpen ? null : report.id)}
                     >
-                      <div className="record-meta-row">
-                        <span>{report.id}</span>
-                        <span>{getStateLabel(report.state)}</span>
-                        <span>{report.sourceType}</span>
-                        <span>{report.startYear}</span>
+                      <div className="record-topline">
+                        <div className="record-meta-row">
+                          <span>{report.id}</span>
+                          <span>{getStateLabel(report.state)}</span>
+                          <span>{report.sourceType}</span>
+                          <span>{report.startYear}</span>
+                        </div>
+                        <span className="record-toggle">{isOpen ? 'Collapse' : 'Expand'}</span>
                       </div>
+
                       <h3 className="record-title">{report.designation}</h3>
                       <p className="record-summary">
                         {report.operator} / {report.agency} / {report.activity}
@@ -480,19 +530,19 @@ export default function Home() {
                     {isOpen && (
                       <div className="record-detail">
                         <div className="detail-grid">
-                          <div>
+                          <div className="detail-card">
                             <span className="detail-label">Date range</span>
                             <p>{report.dateRange}</p>
                           </div>
-                          <div>
+                          <div className="detail-card">
                             <span className="detail-label">Issuing agency</span>
                             <p>{report.agency}</p>
                           </div>
-                          <div>
+                          <div className="detail-card">
                             <span className="detail-label">Operator</span>
                             <p>{report.operator}</p>
                           </div>
-                          <div>
+                          <div className="detail-card">
                             <span className="detail-label">Activity</span>
                             <p>{report.activity}</p>
                           </div>
@@ -521,7 +571,7 @@ export default function Home() {
       <footer className="site-footer">
         <div className="shell footer-row">
           <p>Public records archive. Not affiliated with Rainmaker Technology Corporation.</p>
-          <p>Brutalist monochrome rebuild.</p>
+          <p>Source links appear only inside expanded records.</p>
         </div>
       </footer>
     </>
