@@ -1,4 +1,4 @@
-export type SourceType = 'NOAA Report' | 'FAA NOTAM' | 'State Permit' | 'Government Contract' | 'Legal Filing' | 'FOIA Record' | 'Academic Study';
+export type SourceType = 'NOAA Report' | 'State Permit' | 'Government Contract' | 'Academic Study';
 
 export interface Report {
   id: string;
@@ -18,60 +18,139 @@ export interface Report {
 }
 
 export const REPORTS: Report[] = [
-  // ===== NOAA REPORTS — RAINMAKER DIRECT =====
-  { id: 'HIST-RAINMAKER-TX-2025', designation: 'Rainmaker Technology Corp — Texas Cloud Seeding Mission (July 2025)', dateRange: '7/2/2025', startYear: 2025, activity: 'Increase precipitation', state: 'TX', operator: 'Rainmaker Technology Corp', agency: 'NOAA', sourceType: 'NOAA Report', rainmakerRelated: true, lat: 30.0, lng: -99.1, notes: 'Operation near Kerrville, TX. Cited in media coverage following July 2025 floods. Augustus Doricko addressed liability claims on SRS #217, stating operations were fully permitted. Scientists interviewed by TechCrunch confirmed cloud seeding cannot cause flooding of that magnitude.', url: 'https://library.noaa.gov/weather-climate/weather-modification-project-reports' },
-  { id: 'HIST-RAINMAKER-UT-2023', designation: 'Rainmaker Technology Corp — Utah Dept. of Natural Resources Contract', dateRange: '11/1/2023 - 4/30/2024', startYear: 2023, activity: 'Increase precipitation', state: 'UT', operator: 'Rainmaker Technology Corp', agency: 'Utah DNR / NOAA', sourceType: 'NOAA Report', rainmakerRelated: true, lat: 40.7, lng: -111.9, notes: 'Multi-basin cloud seeding for snowpack enhancement across Wasatch Front. Contract confirmed by Augustus Doricko on SRS #207.', url: 'https://library.noaa.gov/weather-climate/weather-modification-project-reports' },
-  { id: 'HIST-RAINMAKER-CO-2023', designation: 'Rainmaker Technology Corp — Colorado Headwaters Snowpack Program', dateRange: '12/1/2023 - 3/31/2024', startYear: 2023, activity: 'Augment snowpack', state: 'CO', operator: 'Rainmaker Technology Corp', agency: 'NOAA', sourceType: 'NOAA Report', rainmakerRelated: true, url: 'https://library.noaa.gov/weather-climate/weather-modification-project-reports' },
-  { id: 'HIST-RAINMAKER-OR-2022', designation: 'Rainmaker Technology Corp — Eastern Oregon Cloud Seeding', dateRange: '2/1/2022 - 4/30/2022', startYear: 2022, activity: 'Increase precipitation', state: 'OR', operator: 'Rainmaker Technology Corp', agency: 'NOAA', sourceType: 'NOAA Report', rainmakerRelated: true, url: 'https://library.noaa.gov/weather-climate/weather-modification-project-reports' },
-  { id: 'HIST-RAINMAKER-NM-2024', designation: 'Rainmaker Technology Corp — New Mexico Monsoon Augmentation', dateRange: '6/1/2024 - 9/30/2024', startYear: 2024, activity: 'Increase precipitation', state: 'NM', operator: 'Rainmaker Technology Corp', agency: 'NOAA', sourceType: 'NOAA Report', rainmakerRelated: true, notes: 'First Rainmaker operation in the New Mexico monsoon corridor.', url: 'https://library.noaa.gov/weather-climate/weather-modification-project-reports' },
-  // ===== NOAA REPORTS — OTHER =====
-  { id: '2024CAMOKE-1', designation: 'Mokelumne River Watershed, California — Precipitation Increase', dateRange: '11/1/2023 - 12/31/2023', startYear: 2023, activity: 'Increase precipitation', state: 'CA', operator: 'Pacific Gas & Electric / EBMUD', agency: 'NOAA', sourceType: 'NOAA Report', url: 'https://library.oarcloud.noaa.gov/noaa_documents.lib/OAR/OWAQ/Weather_Modification_Project/FY24/Q2/2024CAMOKE-1.pdf' },
-  { id: '2024CACARE-1', designation: 'Alameda, California — Marine Boundary Layer Cloud Study', dateRange: '4/2/2024 - 5/24/2024', startYear: 2024, activity: 'Marine boundary layer', state: 'CA', operator: 'UC San Diego / Scripps', agency: 'NOAA / DOE', sourceType: 'NOAA Report', notes: 'Low-level marine cloud brightening research study.', url: 'https://library.oarcloud.noaa.gov/noaa_documents.lib/OAR/OWAQ/Weather_Modification_Project/FY24/Q3/2024CACARE-1.pdf' },
-  { id: '2021TXB-2', designation: 'Texas Big Bend WMA — Snowpack Augmentation (Final Report)', dateRange: '3/1/2021 - 11/15/2021', startYear: 2021, activity: 'Augment snowpack', state: 'TX', operator: 'Texas Department of Licensing & Regulation', agency: 'NOAA', sourceType: 'NOAA Report', url: 'http://library.oarcloud.noaa.gov/noaa_documents.lib/OAR/OWAQ/Weather_Modification_Project/FY22/2021TXB.pdf' },
-  { id: '2021TXWT-2', designation: 'Texas West Texas WMA — Snowpack Augmentation (Final Report)', dateRange: '3/1/2021 - 11/15/2021', startYear: 2021, activity: 'Augment snowpack', state: 'TX', operator: 'Texas Department of Licensing & Regulation', agency: 'NOAA', sourceType: 'NOAA Report', url: 'http://library.oarcloud.noaa.gov/noaa_documents.lib/OAR/OWAQ/Weather_Modification_Project/FY22/2021TXWT.pdf' },
-  { id: '05-1260', designation: 'Alta/Snowbird, Utah — Snowpack Augmentation (2004–05)', dateRange: '10/15/2004 - 12/24/2004', startYear: 2004, activity: 'Augment snowpack', state: 'UT', operator: 'North American Weather Consultants', agency: 'NOAA', sourceType: 'NOAA Report', url: 'http://library.oarcloud.noaa.gov/noaa_documents.lib/OAR/OWAQ/Weather_Modification_Project/Alta%20-%20Snowbird_05-1260_10.15.2004-12.24.2004.pdf' },
-  { id: '06-1307', designation: 'Alta/Snowbird, Utah — Snowpack Augmentation (2005–06)', dateRange: '10/15/2005 - 12/24/2005', startYear: 2005, activity: 'Augment snowpack', state: 'UT', operator: 'North American Weather Consultants', agency: 'NOAA', sourceType: 'NOAA Report', url: 'http://library.oarcloud.noaa.gov/noaa_documents.lib/OAR/OWAQ/Weather_Modification_Project/Alta%20-%20Snowbird_06-1307_10.15.2005-12.24.2005.pdf' },
-  { id: '07-1346', designation: 'Alta/Snowbird, Utah — Snowpack Augmentation (2006–07)', dateRange: '10/17/2006 - 12/24/2006', startYear: 2006, activity: 'Augment snowpack', state: 'UT', operator: 'North American Weather Consultants', agency: 'NOAA', sourceType: 'NOAA Report', url: 'http://library.oarcloud.noaa.gov/noaa_documents.lib/OAR/OWAQ/Weather_Modification_Project/Alta%20-%20Snowbird_07-1346_10.17.2006-12.24.2006.pdf' },
-  { id: '10-1485', designation: 'Alta/Snowbird, Utah — Snowpack Augmentation (2009–10)', dateRange: '10/15/2009 - 12/24/2009', startYear: 2009, activity: 'Augment snowpack', state: 'UT', operator: 'North American Weather Consultants', agency: 'NOAA', sourceType: 'NOAA Report', url: 'http://library.oarcloud.noaa.gov/noaa_documents.lib/OAR/OWAQ/Weather_Modification_Project/Alta%20-%20Snowbird,%20Utah_10-1485_10.15.2009-12.24.2009.pdf' },
-  { id: 'CO-PRECIP-2022-1', designation: 'Colorado River Basin — Precipitation Enhancement Program', dateRange: '11/1/2022 - 4/30/2023', startYear: 2022, activity: 'Increase precipitation', state: 'CO', operator: 'Western Weather Consultants', agency: 'NOAA / USBR', sourceType: 'NOAA Report', url: 'https://library.noaa.gov/weather-climate/weather-modification-project-reports' },
-  { id: 'OR-PEND-2022-1', designation: 'Pendleton, Oregon — Cloud Seeding Operation', dateRange: '1/15/2022 - 3/30/2022', startYear: 2022, activity: 'Increase precipitation', state: 'OR', operator: 'Weather Modification Inc.', agency: 'NOAA', sourceType: 'NOAA Report', url: 'https://library.noaa.gov/weather-climate/weather-modification-project-reports' },
-  { id: 'OR-WILL-2023-1', designation: 'Willamette Valley, Oregon — Precipitation Enhancement', dateRange: '11/10/2023 - 2/28/2024', startYear: 2023, activity: 'Increase precipitation', state: 'OR', operator: 'Weather Modification Inc.', agency: 'NOAA', sourceType: 'NOAA Report', url: 'https://library.noaa.gov/weather-climate/weather-modification-project-reports' },
-  { id: 'NV-LAKE-2020-1', designation: 'Lake Tahoe Basin, Nevada — Snowpack Augmentation', dateRange: '11/1/2020 - 3/31/2021', startYear: 2020, activity: 'Augment snowpack', state: 'NV', operator: 'Desert Research Institute', agency: 'NOAA', sourceType: 'NOAA Report', url: 'https://library.noaa.gov/weather-climate/weather-modification-project-reports' },
-  { id: 'AZ-SALT-2023-1', designation: 'Salt River Project, Arizona — Cloud Seeding Program', dateRange: '7/1/2023 - 9/30/2023', startYear: 2023, activity: 'Increase precipitation', state: 'AZ', operator: 'Salt River Project Authority', agency: 'NOAA / Arizona DWR', sourceType: 'NOAA Report', url: 'https://library.noaa.gov/weather-climate/weather-modification-project-reports' },
-  { id: 'WY-WIND-2022-1', designation: 'Wind River Range, Wyoming — Snowpack Enhancement', dateRange: '11/15/2022 - 3/31/2023', startYear: 2022, activity: 'Augment snowpack', state: 'WY', operator: 'Wyoming Water Development Office', agency: 'NOAA', sourceType: 'NOAA Report', url: 'https://library.noaa.gov/weather-climate/weather-modification-project-reports' },
-  { id: 'ID-BOI-2021-1', designation: 'Boise River Basin, Idaho — Cloud Seeding Operations', dateRange: '1/1/2021 - 4/30/2021', startYear: 2021, activity: 'Increase precipitation', state: 'ID', operator: 'Idaho Power Company', agency: 'NOAA', sourceType: 'NOAA Report', url: 'https://library.noaa.gov/weather-climate/weather-modification-project-reports' },
-  { id: 'NM-RIOGRANDE-2023-1', designation: 'Rio Grande Headwaters, New Mexico — Precipitation Enhancement', dateRange: '6/1/2023 - 9/30/2023', startYear: 2023, activity: 'Increase precipitation', state: 'NM', operator: 'New Mexico Interstate Stream Commission', agency: 'NOAA', sourceType: 'NOAA Report', url: 'https://library.noaa.gov/weather-climate/weather-modification-project-reports' },
-  { id: 'SD-HAIL-2022-1', designation: 'South Dakota Hail Suppression Program 2022', dateRange: '5/1/2022 - 9/30/2022', startYear: 2022, activity: 'Hail suppression', state: 'SD', operator: 'Weather Modification Inc.', agency: 'NOAA', sourceType: 'NOAA Report', url: 'https://library.noaa.gov/weather-climate/weather-modification-project-reports' },
-  { id: 'ND-PREC-2022-1', designation: 'North Dakota Cloud Modification Project — Precipitation', dateRange: '4/15/2022 - 9/30/2022', startYear: 2022, activity: 'Increase precipitation', state: 'ND', operator: 'Weather Modification Inc.', agency: 'NOAA', sourceType: 'NOAA Report', url: 'https://library.noaa.gov/weather-climate/weather-modification-project-reports' },
-  { id: 'WA-CASC-2023-1', designation: 'Cascade Mountains, Washington — Snowpack Augmentation', dateRange: '11/20/2023 - 3/31/2024', startYear: 2023, activity: 'Augment snowpack', state: 'WA', operator: 'WA Dept. of Ecology', agency: 'NOAA', sourceType: 'NOAA Report', url: 'https://library.noaa.gov/weather-climate/weather-modification-project-reports' },
-  // ===== FAA NOTAMs =====
-  { id: 'FAA-NOTAM-TX-2025-07', designation: 'FAA NOTAM — TFR Kerrville TX, Cloud Seeding Aircraft Operations', dateRange: '7/2/2025', startYear: 2025, activity: 'Increase precipitation', state: 'TX', operator: 'Rainmaker Technology Corp', agency: 'FAA', sourceType: 'FAA NOTAM', rainmakerRelated: true, lat: 30.0, lng: -99.1, notes: 'TFR issued for Cessna Citation jet operations at 18,000–35,000 ft. Coordinates 30.0°N 99.1°W. Search FAA NOTAM archive (notams.aim.faa.gov) using keyword KERRVILLE or ZHU ARTCC.', url: 'https://notams.aim.faa.gov/notamSearch/' },
-  { id: 'FAA-NOTAM-UT-2023-11', designation: 'FAA NOTAM — Utah Cloud Seeding Operations, ZLC ARTCC Advisory', dateRange: '11/1/2023 - 4/30/2024', startYear: 2023, activity: 'Augment snowpack', state: 'UT', operator: 'Rainmaker Technology Corp', agency: 'FAA', sourceType: 'FAA NOTAM', rainmakerRelated: true, notes: 'Recurring seasonal NOTAM. Search ZLC (Salt Lake City ARTCC) in FAA NOTAM archive.', url: 'https://notams.aim.faa.gov/notamSearch/' },
-  { id: 'FAA-NOTAM-OR-2022-02', designation: 'FAA NOTAM — Eastern Oregon Seeding Aircraft TFR', dateRange: '2/1/2022 - 4/30/2022', startYear: 2022, activity: 'Increase precipitation', state: 'OR', operator: 'Rainmaker Technology Corp', agency: 'FAA', sourceType: 'FAA NOTAM', rainmakerRelated: true, url: 'https://notams.aim.faa.gov/notamSearch/' },
-  { id: 'FAA-NOTAM-SD-2022-05', designation: 'FAA NOTAM — South Dakota Hail Suppression Aircraft Advisory', dateRange: '5/1/2022 - 9/30/2022', startYear: 2022, activity: 'Hail suppression', state: 'SD', operator: 'Weather Modification Inc.', agency: 'FAA', sourceType: 'FAA NOTAM', url: 'https://notams.aim.faa.gov/notamSearch/' },
-  // ===== STATE PERMITS =====
-  { id: 'TX-TDLR-WM-2025-001', designation: 'Texas Weather Modification Permit — Kerr County Operations', dateRange: '2025', startYear: 2025, activity: 'Increase precipitation', state: 'TX', operator: 'Rainmaker Technology Corp', agency: 'Texas TDLR', sourceType: 'State Permit', rainmakerRelated: true, notes: 'Required under Texas Water Code Chapter 301. All active permits searchable via TDLR license lookup (tdlr.texas.gov/weather).', url: 'https://www.tdlr.texas.gov/weather/weathermod.htm' },
-  { id: 'TX-TDLR-WM-2022-004', designation: 'Texas Weather Modification License — WMI Annual Renewal', dateRange: '2022', startYear: 2022, activity: 'Hail suppression', state: 'TX', operator: 'Weather Modification Inc.', agency: 'Texas TDLR', sourceType: 'State Permit', url: 'https://www.tdlr.texas.gov/weather/weathermod.htm' },
-  { id: 'UT-PERMIT-RAINMAKER-2023', designation: 'Utah Weather Modification Permit — Rainmaker Annual License', dateRange: '2023-2024', startYear: 2023, activity: 'Increase precipitation', state: 'UT', operator: 'Rainmaker Technology Corp', agency: 'Utah Division of Water Resources', sourceType: 'State Permit', rainmakerRelated: true, notes: 'Utah Code Ann. § 73-15 requires state-level weather modification permits. Active permits listed at water.utah.gov/cloud-seeding.', url: 'https://water.utah.gov/cloud-seeding/' },
-  { id: 'OR-ODA-PERMIT-2022', designation: 'Oregon Weather Modification License — Eastern OR', dateRange: '2022', startYear: 2022, activity: 'Increase precipitation', state: 'OR', operator: 'Rainmaker Technology Corp', agency: 'Oregon Dept. of Agriculture', sourceType: 'State Permit', rainmakerRelated: true, url: 'https://www.oregon.gov/ODA/programs/NaturalResources/Pages/WeatherModification.aspx' },
-  { id: 'AZ-DWR-PERMIT-2023', designation: 'Arizona Cloud Seeding Permit — Salt River Project', dateRange: '7/1/2023 - 9/30/2023', startYear: 2023, activity: 'Increase precipitation', state: 'AZ', operator: 'Salt River Project Authority', agency: 'Arizona DWR', sourceType: 'State Permit', url: 'https://new.azwater.gov/' },
-  { id: 'WY-WWDO-PERMIT-2022', designation: 'Wyoming Cloud Seeding Permit — Wind River Range', dateRange: '11/2022 - 4/2023', startYear: 2022, activity: 'Augment snowpack', state: 'WY', operator: 'Wyoming Water Development Office', agency: 'Wyoming State Engineer', sourceType: 'State Permit', url: 'https://wwdo.state.wy.us/cloud-seeding/' },
-  { id: 'ID-IDWR-PERMIT-2021', designation: 'Idaho Cloud Seeding Permit — Idaho Power Boise Basin', dateRange: '2021', startYear: 2021, activity: 'Increase precipitation', state: 'ID', operator: 'Idaho Power Company', agency: 'Idaho IDWR', sourceType: 'State Permit', url: 'https://idwr.idaho.gov/water-rights/cloud-seeding/' },
-  { id: 'ND-SWC-PERMIT-2022', designation: 'North Dakota Cloud Modification Permit — Statewide', dateRange: '4/2022 - 9/2022', startYear: 2022, activity: 'Increase precipitation', state: 'ND', operator: 'Weather Modification Inc.', agency: 'ND State Water Commission', sourceType: 'State Permit', url: 'https://www.swc.nd.gov/atm_water_resources/weather_modification.html' },
+  // ===== NOAA REPORTS — RAINMAKER 2025 TEXAS OPERATIONS =====
+  {
+    id: '2025TXGU-1',
+    designation: 'Project Precipitation Enhancement — Gulf Coast',
+    dateRange: 'Jan 24, 2025 - Dec 27, 2025',
+    startYear: 2025,
+    activity: 'Increase precipitation',
+    state: 'TX',
+    url: 'https://library.oarcloud.noaa.gov/noaa_documents.lib/OAR/OWAQ/Weather_Modification_Project/FY25/Q2/2025TXGU-1.pdf',
+    sourceType: 'NOAA Report',
+    operator: 'Rainmaker Technology Corporation',
+    agency: 'NOAA',
+    notes: '1,236 sq mi Gulf of Mexico coastline. Dispersing charged water droplets into warm stratocumulus/cumulus clouds. No Environmental Impact Statement filed.',
+    rainmakerRelated: true,
+    lat: 27.8,
+    lng: -97.4
+  },
+  {
+    id: '2025TXST-1',
+    designation: 'Project South Texas Weather Modification Association',
+    dateRange: 'Mar 5, 2025 - Nov 29, 2025',
+    startYear: 2025,
+    activity: 'Increase precipitation',
+    state: 'TX',
+    url: 'https://library.oarcloud.noaa.gov/noaa_documents.lib/OAR/OWAQ/Weather_Modification_Project/FY25/Q3/2025TXST-1.pdf',
+    sourceType: 'NOAA Report',
+    operator: 'Rainmaker Technology Corporation',
+    agency: 'NOAA',
+    notes: '10,830 sq mi South Texas region. Operations conducted July 2, 2025, two days before catastrophic Kerr County floods that killed 100+ people. Widely criticized amid conspiracy theories. Marjorie Taylor Greene introduced federal ban targeting this project. No EIS filed.',
+    rainmakerRelated: true,
+    lat: 28.5,
+    lng: -99.0
+  },
+  {
+    id: '2025TXTP-1',
+    designation: 'Project Trans-Pecos Weather Modification Association',
+    dateRange: 'Mar 15, 2025 - Oct 31, 2025',
+    startYear: 2025,
+    activity: 'Increase precipitation',
+    state: 'TX',
+    url: 'https://library.oarcloud.noaa.gov/noaa_documents.lib/OAR/OWAQ/Weather_Modification_Project/FY25/Q3/2025TXTP-1.pdf',
+    sourceType: 'NOAA Report',
+    operator: 'Rainmaker Technology Corporation',
+    agency: 'NOAA',
+    notes: 'Trans-Pecos region (Pecos, Reeves, Ward, Loving, portions of Culberson Counties). Rainfall enhancement + hail suppression. No EIS filed.',
+    rainmakerRelated: true,
+    lat: 31.4,
+    lng: -103.5
+  },
+  {
+    id: '2025TXWT-1',
+    designation: 'Project West Texas Weather Modification',
+    dateRange: 'Mar 15, 2025 - Oct 31, 2025',
+    startYear: 2025,
+    activity: 'Increase precipitation',
+    state: 'TX',
+    url: 'https://library.oarcloud.noaa.gov/noaa_documents.lib/OAR/OWAQ/Weather_Modification_Project/FY25/Q3/2025TXWT-1.pdf',
+    sourceType: 'NOAA Report',
+    operator: 'Rainmaker Technology Corporation',
+    agency: 'NOAA',
+    notes: 'Region from San Angelo to Midland, TX. Rainfall enhancement + hail suppression. Single engine aircraft with flare racks. No EIS filed.',
+    rainmakerRelated: true,
+    lat: 31.9,
+    lng: -102.1
+  },
+
+  // ===== STATE PERMITS — UTAH & OREGON =====
+  {
+    id: 'UT-CACHE-2024',
+    designation: 'Cache Valley UAV Cloud Seeding Program',
+    dateRange: 'Nov 2024 - Apr 2025',
+    startYear: 2024,
+    activity: 'Augment snowpack',
+    state: 'UT',
+    url: 'https://water.utah.gov/wp-content/uploads/2025/09/Cache-Valley-UAV-Seasonal-Report-2024-2025.pdf',
+    sourceType: 'State Permit',
+    operator: 'Rainmaker Technology Corporation',
+    agency: 'Utah Division of Water Resources',
+    notes: 'First licensed UAV-based precipitation enhancement in Utah. Autonomous drone system (Elijah V2.0) with onboard silver iodide generators. Proof-of-concept deployment. Anti-icing system allows 45-min operation in icing conditions.',
+    rainmakerRelated: true,
+    lat: 41.7,
+    lng: -111.8
+  },
+  {
+    id: 'OR-UMATILLA-2024',
+    designation: 'Umatilla County Precipitation Enhancement',
+    dateRange: 'Nov 2024 - Apr 2025',
+    startYear: 2024,
+    activity: 'Increase precipitation',
+    state: 'OR',
+    url: 'https://zerogeoengineering.com/2025/rainmaker-cloud-seeding-operations-in-umatilla-oregon-2024-2025/',
+    sourceType: 'State Permit',
+    operator: 'Rainmaker Technology Corporation',
+    agency: 'Oregon Department of Agriculture',
+    notes: 'Licensed under ORS 558. Silver iodide (AgI) used. First licensed precipitation enhancement in Umatilla County. No environmental impact statement provided to NOAA.',
+    rainmakerRelated: true,
+    lat: 45.5,
+    lng: -118.5
+  },
+
   // ===== GOVERNMENT CONTRACTS =====
-  { id: 'CONTRACT-UT-DNR-RAINMAKER-2023', designation: 'Utah DNR Contract — Cloud Seeding Services (Rainmaker Technology Corp)', dateRange: '2023-2024', startYear: 2023, activity: 'Augment snowpack', state: 'UT', operator: 'Rainmaker Technology Corp', agency: 'Utah Division of Natural Resources', sourceType: 'Government Contract', rainmakerRelated: true, notes: 'Searchable via Utah FINET procurement portal (finet.utah.gov). Rainmaker confirmed this contract on SRS #207.', url: 'https://finet.utah.gov/' },
-  { id: 'CONTRACT-OR-ODA-RAINMAKER-2022', designation: 'Oregon ODA Contract — Weather Modification Services', dateRange: '2022', startYear: 2022, activity: 'Increase precipitation', state: 'OR', operator: 'Rainmaker Technology Corp', agency: 'Oregon Dept. of Agriculture', sourceType: 'Government Contract', rainmakerRelated: true, url: 'https://oregon.gov/transparency' },
-  { id: 'CONTRACT-USBR-WMI-CO-2022', designation: 'Bureau of Reclamation Contract — Colorado River Basin Cloud Seeding', dateRange: '2022-2023', startYear: 2022, activity: 'Increase precipitation', state: 'CO', operator: 'Weather Modification Inc.', agency: 'US Bureau of Reclamation', sourceType: 'Government Contract', notes: 'Part of USBR Colorado River Basin Water Supply Enhancement Program. Searchable on SAM.gov.', url: 'https://sam.gov' },
-  { id: 'CONTRACT-USBR-WMI-WY-2021', designation: 'Bureau of Reclamation Contract — Wyoming Cloud Seeding', dateRange: '2021-2023', startYear: 2021, activity: 'Augment snowpack', state: 'WY', operator: 'Weather Modification Inc.', agency: 'US Bureau of Reclamation', sourceType: 'Government Contract', url: 'https://sam.gov' },
-  // ===== LEGAL FILINGS =====
-  { id: 'LEGAL-TX-RAINMAKER-2025', designation: 'Texas Lawsuit — Kerr County Flood Victims v. Rainmaker Technology (Pending)', dateRange: '2025', startYear: 2025, activity: 'Litigation', state: 'TX', operator: 'Rainmaker Technology Corp', agency: 'Texas District Court', sourceType: 'Legal Filing', rainmakerRelated: true, notes: 'Civil lawsuits filed after July 2025 Texas floods. Augustus Doricko stated on SRS #217 that operations were fully permitted. Multiple atmospheric scientists told TechCrunch the claim is scientifically impossible — cloud seeding cannot cause flooding of that scale.', url: 'https://www.courtlistener.com/' },
-  { id: 'LEGAL-CLOUD-CA-1999', designation: 'Corbin v. North American Weather Consultants — California Precedent', dateRange: '1999', startYear: 1999, activity: 'Litigation', state: 'CA', operator: 'North American Weather Consultants', agency: 'California Court of Appeal', sourceType: 'Legal Filing', notes: 'Landmark case establishing cloud seeding operators are not liable for precipitation that falls outside the target area.', url: 'https://www.courtlistener.com/' },
-  // ===== FOIA RECORDS =====
-  { id: 'FOIA-RAINMAKER-DORICKO-2025', designation: 'FOIA Request Guide — Rainmaker FAA Flight Logs & NOAA Pre-Op Notices (July 2025)', dateRange: '2025', startYear: 2025, activity: 'Increase precipitation', state: 'TX', operator: 'Rainmaker Technology Corp', agency: 'FAA / NOAA', sourceType: 'FOIA Record', rainmakerRelated: true, notes: 'Submit FOIA requests to: NOAA FOIA Office (noaa.foia@noaa.gov) and FAA FOIA (9-awa-foia@faa.gov). Request aircraft N-numbers, pre-operation notification letters, and silver iodide deployment logs.', url: 'https://www.noaa.gov/foia-freedom-of-information-act' },
-  { id: 'FOIA-USBR-WMI-COLORADO', designation: 'FOIA Request Guide — Bureau of Reclamation Cloud Seeding Contracts', dateRange: '2020-2023', startYear: 2020, activity: 'Augment snowpack', state: 'CO', operator: 'Weather Modification Inc.', agency: 'US Bureau of Reclamation', sourceType: 'FOIA Record', notes: 'Submit via usbr.gov/foia. Request contract SOW documents, operation logs, and efficacy reports.', url: 'https://www.usbr.gov/foia/' },
-  { id: 'FOIA-DOD-WEATHERMOD', designation: 'FOIA Request Guide — DoD Historical Weather Modification Programs', dateRange: '1960s–1980s', startYear: 1960, activity: 'Other', state: '', operator: 'US Military / DARPA', agency: 'Department of Defense', sourceType: 'FOIA Record', notes: 'Operation Popeye (Vietnam, 1967–72) declassified docs available via National Archives. ARPA Project Stormfury records accessible through DoD FOIA portal (esd.whs.mil/FOID).', url: 'https://www.esd.whs.mil/FOID/' },
+  {
+    id: 'CO-OPS-2025',
+    designation: 'Colorado Rainfall Enhancement Operations',
+    dateRange: 'Oct 2025 - ongoing',
+    startYear: 2025,
+    activity: 'Increase precipitation',
+    state: 'CO',
+    url: 'https://www.kunc.org/news/2025-10-10/this-tech-will-make-it-rain-literally-above-colorado',
+    sourceType: 'Government Contract',
+    operator: 'Rainmaker Technology Corporation',
+    agency: 'Colorado Water Conservation Board',
+    notes: 'Technology can increase annual rainfall by 15-17% according to Rainmaker officials. Drone-based delivery system. Publicly reported operations as of Oct 2025.',
+    rainmakerRelated: true,
+    lat: 39.5,
+    lng: -105.8
+  },
+
   // ===== ACADEMIC STUDIES =====
-  { id: 'STUDY-DRI-NEVADA-2022', designation: 'Desert Research Institute — Cloud Seeding Efficacy in the Sierra Nevada', dateRange: '2022', startYear: 2022, activity: 'Augment snowpack', state: 'NV', operator: 'Desert Research Institute', agency: 'Nevada System of Higher Education', sourceType: 'Academic Study', notes: 'Peer-reviewed study finding 10–15% average precipitation increase in target basins. Published in Journal of Applied Meteorology and Climatology.', url: 'https://www.dri.edu/cloud-seeding-research/' },
-  { id: 'STUDY-UCAR-PRECIP-2024', designation: 'NCAR/UCAR — Cloud Seeding Effectiveness Across Western US (Meta-Analysis)', dateRange: '2024', startYear: 2024, activity: 'Increase precipitation', state: '', operator: 'NCAR / UCAR', agency: 'NSF / NOAA', sourceType: 'Academic Study', notes: 'Comprehensive meta-analysis of 60 years of cloud seeding data across 15 western states, including operations by Rainmaker, WMI, and NAWC. Key finding: average 10–20% augmentation in orographic snowpack.', url: 'https://www.ucar.edu/research/' },
-  { id: 'STUDY-WUSTL-AGISTERILE-2023', designation: 'Washington University — Silver Iodide Environmental Impact Study', dateRange: '2023', startYear: 2023, activity: 'Other', state: '', operator: 'Washington University in St. Louis', agency: 'NSF', sourceType: 'Academic Study', notes: 'Examined AgI particle dispersion and groundwater silver concentrations near long-running cloud seeding operations. Found levels below EPA thresholds in all studied regions.', url: 'https://wustl.edu/research/' },
+  {
+    id: 'DRI-SIERRA-2023',
+    designation: 'Sierra Nevada Cloud Seeding Efficacy Study',
+    dateRange: '2020 - 2023',
+    startYear: 2020,
+    activity: 'Augment snowpack',
+    state: 'CA',
+    url: 'https://www.dri.edu/cloud-seeding/',
+    sourceType: 'Academic Study',
+    operator: 'Desert Research Institute',
+    agency: 'DRI / California Dept of Water Resources',
+    notes: 'Independent peer-reviewed study found 10-15% precipitation increase from ground-based silver iodide generators in the Sierra Nevada. Rainmaker uses similar AgI-based techniques.',
+    rainmakerRelated: false,
+    lat: 39.3,
+    lng: -120.2
+  }
 ];
