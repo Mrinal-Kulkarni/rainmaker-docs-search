@@ -70,8 +70,7 @@ export default function Home() {
   const [sourceType, setSourceType] = useState<typeof ALL_OPTION | SourceType>(ALL_OPTION);
   const [activity, setActivity] = useState<string>(ALL_OPTION);
   const [operator, setOperator] = useState<string>(ALL_OPTION);
-  const [yearStart, setYearStart] = useState(YEAR_MIN);
-  const [yearEnd, setYearEnd] = useState(YEAR_MAX);
+  const [yearFilter, setYearFilter] = useState(YEAR_MAX);
   const [showAllRecords, setShowAllRecords] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
@@ -80,15 +79,14 @@ export default function Home() {
     sourceType !== ALL_OPTION ||
     activity !== ALL_OPTION ||
     operator !== ALL_OPTION ||
-    yearStart !== YEAR_MIN ||
-    yearEnd !== YEAR_MAX;
+    yearFilter !== YEAR_MAX;
 
   const activeFilterCount = [
     stateFilter !== ALL_OPTION,
     sourceType !== ALL_OPTION,
     activity !== ALL_OPTION,
     operator !== ALL_OPTION,
-    yearStart !== YEAR_MIN || yearEnd !== YEAR_MAX,
+    yearFilter !== YEAR_MAX,
   ].filter(Boolean).length;
 
   const shouldShowRecords = hasActiveFilters || showAllRecords;
@@ -110,7 +108,7 @@ export default function Home() {
       return false;
     }
 
-    return report.startYear >= yearStart && report.startYear <= yearEnd;
+    return report.startYear <= yearFilter;
   }).sort((left, right) => {
     if (right.startYear !== left.startYear) {
       return right.startYear - left.startYear;
@@ -118,6 +116,9 @@ export default function Home() {
 
     return left.designation.localeCompare(right.designation);
   });
+
+  const visibleRecordCount = shouldShowRecords ? filteredReports.length : 0;
+  const recordCountLabel = `${visibleRecordCount} record${visibleRecordCount === 1 ? '' : 's'}`;
 
   function handleStateChange(value: string) {
     setShowAllRecords(false);
@@ -143,22 +144,10 @@ export default function Home() {
     setOperator(value);
   }
 
-  function handleYearStartChange(value: number) {
+  function handleYearFilterChange(value: number) {
     setShowAllRecords(false);
     setExpandedId(null);
-    setYearStart(value);
-    if (value > yearEnd) {
-      setYearEnd(value);
-    }
-  }
-
-  function handleYearEndChange(value: number) {
-    setShowAllRecords(false);
-    setExpandedId(null);
-    setYearEnd(value);
-    if (value < yearStart) {
-      setYearStart(value);
-    }
+    setYearFilter(value);
   }
 
   function resetFilters() {
@@ -166,8 +155,7 @@ export default function Home() {
     setSourceType(ALL_OPTION);
     setActivity(ALL_OPTION);
     setOperator(ALL_OPTION);
-    setYearStart(YEAR_MIN);
-    setYearEnd(YEAR_MAX);
+    setYearFilter(YEAR_MAX);
     setShowAllRecords(false);
     setExpandedId(null);
   }
@@ -177,26 +165,15 @@ export default function Home() {
     setSourceType(ALL_OPTION);
     setActivity(ALL_OPTION);
     setOperator(ALL_OPTION);
-    setYearStart(YEAR_MIN);
-    setYearEnd(YEAR_MAX);
+    setYearFilter(YEAR_MAX);
     setShowAllRecords(true);
     setExpandedId(null);
     setMobileFiltersOpen(false);
   }
 
-  function renderFilterPanel(showIntro: boolean) {
+  function renderFilterPanel() {
     return (
       <div className="filters-panel">
-        {showIntro ? (
-          <div className="panel-heading">
-            <p className="panel-kicker">Filters</p>
-            <h1 className="panel-title">Search public operations records.</h1>
-            <p className="panel-copy">
-              Narrow by state, source type, activity, operator, and filing window.
-            </p>
-          </div>
-        ) : null}
-
         <div className="filter-stack">
           <label className="filter-field">
             <span className="filter-label">State</span>
@@ -249,38 +226,21 @@ export default function Home() {
             </select>
           </label>
 
-          <div className="year-grid">
-            <label className="filter-field">
-              <span className="filter-label">Year from</span>
-              <select
-                value={yearStart}
-                onChange={(event) => handleYearStartChange(Number(event.target.value))}
-              >
-                {YEAR_OPTIONS.map((year) => (
-                  <option key={year} value={year}>
-                    {year}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label className="filter-field">
-              <span className="filter-label">Year to</span>
-              <select value={yearEnd} onChange={(event) => handleYearEndChange(Number(event.target.value))}>
-                {YEAR_OPTIONS.map((year) => (
-                  <option key={year} value={year}>
-                    {year}
-                  </option>
-                ))}
-              </select>
-            </label>
-          </div>
+          <label className="filter-field">
+            <span className="filter-label">Year to</span>
+            <select value={yearFilter} onChange={(event) => handleYearFilterChange(Number(event.target.value))}>
+              {YEAR_OPTIONS.map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
+          </label>
         </div>
 
         <div className="filters-footer">
           <div className="filters-status">
-            <span>{activeFilterCount} active</span>
-            <span>{REPORTS.length} indexed</span>
+            <span>{activeFilterCount} active filter{activeFilterCount === 1 ? '' : 's'}</span>
           </div>
 
           <div className="filters-actions">
@@ -317,7 +277,6 @@ export default function Home() {
         </a>
 
         <div className="header-meta">
-          <span className="header-caption">8 public records</span>
           <button
             type="button"
             className="drawer-toggle"
@@ -333,7 +292,7 @@ export default function Home() {
       </header>
 
       <div className="ops-layout">
-        <aside className="filters-rail">{renderFilterPanel(true)}</aside>
+        <aside className="filters-rail">{renderFilterPanel()}</aside>
 
         <section className="records-shell" aria-label="Records">
           <div className="records-header">
@@ -345,12 +304,7 @@ export default function Home() {
                   : 'Archive idle'}
               </h2>
             </div>
-
-            <p className="records-copy">
-              {shouldShowRecords
-                ? 'Expand a record to inspect agency context, notes, and the source document.'
-                : 'No records render until a filter is applied from the left rail.'}
-            </p>
+            <span className="records-tab">{recordCountLabel}</span>
           </div>
 
           <div className="records-body">
@@ -373,7 +327,7 @@ export default function Home() {
                 <p className="empty-state-copy">
                   No records match the current filters.
                   <br />
-                  Reset the panel or widen the year range.
+                  Reset the panel or loosen a filter.
                 </p>
               </div>
             ) : (
@@ -455,12 +409,15 @@ export default function Home() {
             <p className="panel-kicker">Filters</p>
             <h2 className="mobile-drawer-title">Refine records</h2>
           </div>
-          <button type="button" className="ghost-button" onClick={() => setMobileFiltersOpen(false)}>
-            Close
-          </button>
+          <div className="mobile-drawer-actions">
+            <span className="records-tab">{recordCountLabel}</span>
+            <button type="button" className="ghost-button" onClick={() => setMobileFiltersOpen(false)}>
+              Close
+            </button>
+          </div>
         </div>
 
-        <div className="mobile-drawer-body">{renderFilterPanel(false)}</div>
+        <div className="mobile-drawer-body">{renderFilterPanel()}</div>
       </aside>
     </div>
   );

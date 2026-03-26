@@ -155,7 +155,7 @@ a:focus-visible {
 .filters-status,
 .record-meta,
 .record-toggle,
-.header-caption {
+.records-tab {
   font-family: var(--font-mono), monospace;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -177,11 +177,6 @@ a:focus-visible {
   display: flex;
   align-items: center;
   gap: 14px;
-}
-
-.header-caption {
-  color: var(--text-tertiary);
-  font-size: 0.72rem;
 }
 
 .drawer-toggle,
@@ -262,16 +257,14 @@ a:focus-visible {
 .filters-rail {
   min-height: 0;
   border-right: 1px solid var(--line);
-  overflow: auto;
+  overflow: hidden;
 }
 
 .filters-panel {
-  position: sticky;
-  top: 0;
   display: flex;
   flex-direction: column;
-  gap: 28px;
-  min-height: 100%;
+  gap: 22px;
+  height: 100%;
   padding: 28px 24px 24px;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent 40%),
@@ -303,7 +296,6 @@ a:focus-visible {
 }
 
 .panel-copy,
-.records-copy,
 .record-subtitle,
 .empty-state-copy,
 .detail-row dd {
@@ -354,12 +346,6 @@ a:focus-visible {
   background: var(--void);
 }
 
-.year-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
-
 .filters-footer {
   margin-top: auto;
   display: grid;
@@ -371,7 +357,6 @@ a:focus-visible {
 .filters-status {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 12px;
   color: var(--text-tertiary);
   font-size: 0.68rem;
@@ -392,7 +377,7 @@ a:focus-visible {
 
 .records-header {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   gap: 24px;
   padding: 28px 28px 22px;
@@ -408,9 +393,18 @@ a:focus-visible {
   line-height: 0.94;
 }
 
-.records-copy {
-  max-width: 30ch;
-  text-align: right;
+.records-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--hover);
+  color: var(--text-secondary);
+  font-size: 0.68rem;
+  white-space: nowrap;
 }
 
 .records-body {
@@ -603,10 +597,6 @@ a:focus-visible {
     display: none;
   }
 
-  .drawer-toggle {
-    display: inline-flex;
-  }
-
   .ops-layout {
     display: block;
     overflow: visible;
@@ -621,14 +611,9 @@ a:focus-visible {
   }
 
   .records-header {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-wrap: wrap;
+    align-items: center;
     padding: 22px 18px 18px;
-  }
-
-  .records-copy {
-    max-width: none;
-    text-align: left;
   }
 
   .records-list {
@@ -687,6 +672,12 @@ a:focus-visible {
     margin-top: 10px;
     font-size: 1.6rem;
     line-height: 0.96;
+  }
+
+  .mobile-drawer-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
   }
 
   .mobile-drawer-body {
