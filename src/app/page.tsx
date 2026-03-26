@@ -142,6 +142,24 @@ function ChevronIcon({ open }: { open: boolean }) {
   );
 }
 
+function extractLocation(designation: string): { title: string; location: string } {
+  const dashIdx = designation.indexOf('\u2014');
+  if (dashIdx === -1) return { title: designation, location: '' };
+
+  const before = designation.slice(0, dashIdx).trim();
+  const after = designation.slice(dashIdx + 1).trim();
+
+  // Location patterns: ends with state abbreviation or is a known place name
+  const locationSuffixes = /,\s*(CA|UT|OR|ID|NM|TX|CO|DC|US)(?:\s*\(superseded\))?(?:\s*v\d+)?$/i;
+  const placeNames = /^(Mojave Desert|Bear River|Ogden|Pendleton|Taos|Idaho|Umatilla County|Karnes County)/i;
+
+  if (locationSuffixes.test(after) || placeNames.test(after)) {
+    return { title: before, location: after };
+  }
+
+  return { title: designation, location: '' };
+}
+
 function RecordCard({
   report,
   expanded,
@@ -151,12 +169,16 @@ function RecordCard({
   expanded: boolean;
   onToggle: () => void;
 }) {
+  const { title, location } = extractLocation(report.designation);
+  const metaParts = [report.state, report.sourceType, report.activity, String(report.startYear)];
+  if (location) metaParts.splice(1, 0, location);
+
   return (
     <article className={`record-card${expanded ? ' is-expanded' : ''}`}>
       <button type="button" className="record-trigger" onClick={onToggle} aria-expanded={expanded}>
         <div>
-          <div className="record-meta">{`${report.state} / ${report.sourceType} / ${report.startYear}`}</div>
-          <h3 className="record-name">{report.designation}</h3>
+          <div className="record-meta">{metaParts.join(' / ')}</div>
+          <h3 className="record-name">{title}</h3>
           <p className="record-subtitle">{report.dateRange}</p>
         </div>
 
