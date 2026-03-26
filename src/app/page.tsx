@@ -13,6 +13,7 @@ interface Filters {
   sourceType: SourceFilter;
   activity: string;
   year: number;
+  query: string;
 }
 
 interface Option {
@@ -40,6 +41,7 @@ const DEFAULT_FILTERS: Filters = {
   sourceType: ALL_OPTION,
   activity: ALL_OPTION,
   year: YEAR_OPTIONS[0] ?? new Date().getFullYear(),
+  query: '',
 };
 
 const SORTED_REPORTS = [...REPORTS].sort((left, right) => {
@@ -54,12 +56,28 @@ const SELECT_FILTERS: ReadonlyArray<{ key: SelectFilterKey; label: string; optio
 ];
 
 function matchesFilters(report: Report, filters: Filters): boolean {
-  return (
-    (filters.state === ALL_OPTION || report.state === filters.state) &&
-    (filters.sourceType === ALL_OPTION || report.sourceType === filters.sourceType) &&
-    (filters.activity === ALL_OPTION || report.activity === filters.activity) &&
-    report.startYear <= filters.year
-  );
+  if (filters.state !== ALL_OPTION && report.state !== filters.state) return false;
+  if (filters.sourceType !== ALL_OPTION && report.sourceType !== filters.sourceType) return false;
+  if (filters.activity !== ALL_OPTION && report.activity !== filters.activity) return false;
+  if (report.startYear > filters.year) return false;
+
+  if (filters.query) {
+    const q = filters.query.toLowerCase();
+    const haystack = [
+      report.designation,
+      report.notes ?? '',
+      report.agency,
+      report.state,
+      report.activity,
+      report.sourceType,
+      report.dateRange,
+      report.operator,
+      report.id,
+    ].join(' ').toLowerCase();
+    if (!haystack.includes(q)) return false;
+  }
+
+  return true;
 }
 
 function hasActiveFilters(filters: Filters): boolean {
@@ -67,7 +85,8 @@ function hasActiveFilters(filters: Filters): boolean {
     filters.state !== DEFAULT_FILTERS.state ||
     filters.sourceType !== DEFAULT_FILTERS.sourceType ||
     filters.activity !== DEFAULT_FILTERS.activity ||
-    filters.year !== DEFAULT_FILTERS.year
+    filters.year !== DEFAULT_FILTERS.year ||
+    filters.query !== ''
   );
 }
 
@@ -76,7 +95,17 @@ function getActiveFilterCount(filters: Filters): number {
     Number(filters.state !== DEFAULT_FILTERS.state) +
     Number(filters.sourceType !== DEFAULT_FILTERS.sourceType) +
     Number(filters.activity !== DEFAULT_FILTERS.activity) +
-    Number(filters.year !== DEFAULT_FILTERS.year)
+    Number(filters.year !== DEFAULT_FILTERS.year) +
+    Number(filters.query !== '')
+  );
+}
+
+function SearchIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <circle cx="7" cy="7" r="5.25" stroke="currentColor" strokeWidth="1.5" />
+      <path d="m11 11 3.5 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
   );
 }
 
@@ -174,7 +203,7 @@ export default function Home() {
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
-  const [useLogoFallback, setUseLogoFallback] = useState(false);
+
 
   const filtersActive = hasActiveFilters(filters);
   const activeFilterCount = getActiveFilterCount(filters);
@@ -204,10 +233,9 @@ export default function Home() {
           <span className="brand-mark">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={useLogoFallback ? '/r-logo.svg' : 'https://www.rainmaker.com/favicon.ico'}
+              src="/r-logo.svg"
               alt="Rainmaker R"
               className="brand-mark-image"
-              onError={() => setUseLogoFallback(true)}
             />
           </span>
           <span className="brand-copy">
@@ -238,6 +266,20 @@ export default function Home() {
       {/* ─── Desktop Filter Bar ─── */}
       <div className="filter-bar-wrapper filter-bar-desktop">
         <div className="filter-bar">
+          <div className="search-field">
+            <SearchIcon />
+            <input
+              type="text"
+              placeholder="Search records..."
+              value={filters.query}
+              onChange={(e) => {
+                setFilters((cur) => ({ ...cur, query: e.target.value }));
+                setExpandedId(null);
+              }}
+              className="search-input"
+            />
+          </div>
+
           {SELECT_FILTERS.map((field) => (
             <div key={field.key} className="filter-field">
               <select
@@ -337,6 +379,23 @@ export default function Home() {
 
         <div className="mobile-drawer-body">
           <div className="mobile-filter-stack">
+            <label>
+              <span className="mobile-filter-label">Search</span>
+              <div className="search-field">
+                <SearchIcon />
+                <input
+                  type="text"
+                  placeholder="Search records..."
+                  value={filters.query}
+                  onChange={(e) => {
+                    setFilters((cur) => ({ ...cur, query: e.target.value }));
+                    setExpandedId(null);
+                  }}
+                  className="search-input"
+                />
+              </div>
+            </label>
+
             {SELECT_FILTERS.map((field) => (
               <label key={field.key}>
                 <span className="mobile-filter-label">{field.label}</span>
