@@ -393,6 +393,54 @@ export const REPORTS: Report[] = [
     lat: 31.0,
     lng: -100.0
   },
+  {
+    id: 'TX-TDLR-STAFF-REPORT-2025',
+    designation: 'TDLR Weather Modification Advisory Board — Staff Report',
+    dateRange: 'Sep 22, 2025',
+    startYear: 2025,
+    activity: 'Regulatory filing',
+    state: 'TX',
+    url: 'https://www.tdlr.texas.gov/weather/agendas/2025-09-22-wxm-staff-report.pdf',
+    sourceType: 'State Permit',
+    operator: 'Rainmaker Technology Corporation',
+    agency: 'Texas Dept of Licensing and Regulation',
+    notes: 'Official TDLR staff report listing all active permits and licenses. Rainmaker license status: \'Pending Review\' for both FY 24-25 and FY 26. Samuel Kim (regulatory@makerain.com) listed as Rainmaker contact for STWMA, TPWMA, and WTWMA. Meteorologists: Bria DeCarlo (STWMA), Todd Flanagan (TPWMA, WTWMA). Lists all permit numbers: STWMA 25-1 (Apr 2025–Mar 2029), WTWMA 22-1 (Apr 2022–Mar 2026), TPWMA 22-2.',
+    rainmakerRelated: true,
+    lat: 30.3,
+    lng: -97.7
+  },
+  {
+    id: 'TX-TDLR-AGENDA-2025',
+    designation: 'TDLR Weather Modification Advisory Board — Meeting Agenda',
+    dateRange: 'Sep 22, 2025',
+    startYear: 2025,
+    activity: 'Regulatory filing',
+    state: 'TX',
+    url: 'https://www.tdlr.texas.gov/weather/agendas/2025-09-22-wxm-agenda.htm',
+    sourceType: 'State Permit',
+    operator: 'Rainmaker Technology Corporation',
+    agency: 'Texas Dept of Licensing and Regulation',
+    notes: 'Agenda item: \'Consideration and possible recommendation on applications for new weather modification licenses for FY 2026: Rainmaker.\' Also includes discussion of SB 2075 (89th Legislature, 2025) and possible changes to rules regarding advisory board composition and reporting requirements.',
+    rainmakerRelated: true,
+    lat: 30.3,
+    lng: -97.7
+  },
+  {
+    id: 'TX-TDLR-STATEMENT-JUL2025',
+    designation: 'TDLR Official Statement — Karnes County Cloud Seeding (July 2, 2025)',
+    dateRange: 'Jul 10, 2025',
+    startYear: 2025,
+    activity: 'Regulatory investigation',
+    state: 'TX',
+    url: 'https://www.tdlr.texas.gov/news/2025/07/10/statement-regarding-cloud-seeding-operations-in-karnes-county-on-july-2-2025/',
+    sourceType: 'State Permit',
+    operator: 'Rainmaker Technology Corporation',
+    agency: 'Texas Dept of Licensing and Regulation',
+    notes: 'Official TDLR investigation conclusion. STWMA (operated by Rainmaker) seeded a storm in Karnes County ~130 mi SE of Kerr County on Jul 2, 2025. Clouds were small, isolated, and completely dissipated by 4 PM. TDLR finds cloud seeding operations \'did not contribute in any way\' to the floods caused by remnants of Tropical Storm Barry. Scientific studies show cloud seeding causes at most 10% increase in precipitation.',
+    rainmakerRelated: true,
+    lat: 28.9,
+    lng: -97.9
+  },
 
   // ══════════════════════════════════════════════════════════════════════════
   //  STATE SEASONAL / OPERATIONAL REPORTS
