@@ -6,13 +6,12 @@ import { REPORTS, Report, SourceType } from '../data/reports';
 const ALL_OPTION = 'ALL' as const;
 
 type SourceFilter = typeof ALL_OPTION | SourceType;
-type SelectFilterKey = 'state' | 'sourceType' | 'activity' | 'operator';
+type SelectFilterKey = 'state' | 'sourceType' | 'activity';
 
 interface Filters {
   state: string;
   sourceType: SourceFilter;
   activity: string;
-  operator: string;
   year: number;
 }
 
@@ -22,40 +21,42 @@ interface Option {
 }
 
 const sortText = (left: string, right: string) => left.localeCompare(right);
-const uniq = <T,>(values: T[]) => Array.from(new Set(values));
 
-const STATE_OPTIONS = buildOptions(REPORTS.map((report) => report.state), 'All states');
-const SOURCE_OPTIONS = buildOptions(REPORTS.map((report) => report.sourceType), 'All source types');
-const ACTIVITY_OPTIONS = buildOptions(REPORTS.map((report) => report.activity), 'All activities');
-const OPERATOR_OPTIONS = buildOptions(REPORTS.map((report) => report.operator), 'All operators');
-const YEAR_OPTIONS = uniq(REPORTS.map((report) => report.startYear)).sort((left, right) => right - left);
+function buildOptionsWithCounts(values: string[], allLabel: string): Option[] {
+  const counts = new Map<string, number>();
+  for (const v of values) {
+    counts.set(v, (counts.get(v) ?? 0) + 1);
+  }
+  const total = values.length;
+  return [
+    { value: ALL_OPTION, label: `${allLabel} (${total})` },
+    ...[...counts.entries()]
+      .sort((a, b) => sortText(a[0], b[0]))
+      .map(([value, count]) => ({ value, label: `${value} (${count})` })),
+  ];
+}
+
+const STATE_OPTIONS = buildOptionsWithCounts(REPORTS.map((r) => r.state), 'All states');
+const SOURCE_OPTIONS = buildOptionsWithCounts(REPORTS.map((r) => r.sourceType), 'All types');
+const ACTIVITY_OPTIONS = buildOptionsWithCounts(REPORTS.map((r) => r.activity), 'All activities');
+const YEAR_OPTIONS = Array.from(new Set(REPORTS.map((r) => r.startYear))).sort((a, b) => b - a);
 const DEFAULT_FILTERS: Filters = {
   state: ALL_OPTION,
   sourceType: ALL_OPTION,
   activity: ALL_OPTION,
-  operator: ALL_OPTION,
   year: YEAR_OPTIONS[0] ?? new Date().getFullYear(),
 };
 const SORTED_REPORTS = [...REPORTS].sort((left, right) => {
   if (right.startYear !== left.startYear) {
     return right.startYear - left.startYear;
   }
-
   return left.designation.localeCompare(right.designation);
 });
 const SELECT_FILTERS: ReadonlyArray<{ key: SelectFilterKey; label: string; options: Option[] }> = [
   { key: 'state', label: 'State', options: STATE_OPTIONS },
-  { key: 'sourceType', label: 'Source type', options: SOURCE_OPTIONS },
+  { key: 'sourceType', label: 'Source', options: SOURCE_OPTIONS },
   { key: 'activity', label: 'Activity', options: ACTIVITY_OPTIONS },
-  { key: 'operator', label: 'Operator', options: OPERATOR_OPTIONS },
 ];
-
-function buildOptions(values: string[], allLabel: string): Option[] {
-  return [
-    { value: ALL_OPTION, label: allLabel },
-    ...uniq(values).sort(sortText).map((value) => ({ value, label: value })),
-  ];
-}
 
 function formatRecordCount(count: number) {
   return `${count} record${count === 1 ? '' : 's'}`;
@@ -70,7 +71,6 @@ function matchesFilters(report: Report, filters: Filters) {
     (filters.state === ALL_OPTION || report.state === filters.state) &&
     (filters.sourceType === ALL_OPTION || report.sourceType === filters.sourceType) &&
     (filters.activity === ALL_OPTION || report.activity === filters.activity) &&
-    (filters.operator === ALL_OPTION || report.operator === filters.operator) &&
     report.startYear <= filters.year
   );
 }
@@ -79,7 +79,6 @@ function getActiveFilterCount(filters: Filters) {
   return Number(filters.state !== DEFAULT_FILTERS.state) +
     Number(filters.sourceType !== DEFAULT_FILTERS.sourceType) +
     Number(filters.activity !== DEFAULT_FILTERS.activity) +
-    Number(filters.operator !== DEFAULT_FILTERS.operator) +
     Number(filters.year !== DEFAULT_FILTERS.year);
 }
 
@@ -230,7 +229,7 @@ function RecordCard({
         <div>
           <div className="record-meta">{`${report.state} • ${report.sourceType} • ${report.startYear}`}</div>
           <h3 className="record-name">{report.designation}</h3>
-          <p className="record-subtitle">{`${report.dateRange} · ${report.operator}`}</p>
+          <p className="record-subtitle">{report.dateRange}</p>
         </div>
 
         <span className="record-toggle">
@@ -253,10 +252,6 @@ function RecordCard({
             <div className="detail-row">
               <dt>Dates</dt>
               <dd>{report.dateRange}</dd>
-            </div>
-            <div className="detail-row">
-              <dt>Operator</dt>
-              <dd>{report.operator}</dd>
             </div>
             <div className="detail-row">
               <dt>Notes</dt>
