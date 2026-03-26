@@ -1,4 +1,4 @@
-export type SourceType = 'NOAA Report' | 'NOAA Final Report' | 'State Permit' | 'Government Contract' | 'State Seasonal Report' | 'Academic Study' | 'Interstate Agreement' | 'FAA Waiver' | 'Federal Register' | 'State Proposal' | 'Lobbying Disclosure' | 'Regulations.gov';
+export type SourceType = 'NOAA Report' | 'NOAA Final Report' | 'State Permit' | 'Government Contract' | 'State Seasonal Report' | 'Academic Study' | 'Interstate Agreement' | 'FAA Waiver' | 'Federal Register' | 'State Proposal' | 'Lobbying Disclosure' | 'Regulations.gov' | 'USPTO Trademark' | 'Congressional Record' | 'State Legislation' | 'FCC Complaint' | 'Court Filing';
 
 export interface Report {
   id: string;
@@ -1188,5 +1188,189 @@ export const REPORTS: Report[] = [
     rainmakerRelated: true,
     lat: 39.0,
     lng: -111.5
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  //  USPTO TRADEMARK
+  // ══════════════════════════════════════════════════════════════════════════
+  {
+    id: 'USPTO-TM-98828923',
+    designation: 'USPTO Trademark Application — Stylized "R" Service Mark',
+    dateRange: 'Oct 30, 2024',
+    startYear: 2024,
+    activity: 'Intellectual property',
+    state: 'US',
+    url: 'https://tsdr.uspto.gov/#caseNumber=98828923&caseType=SERIAL_NO&searchType=statusSearch',
+    sourceType: 'USPTO Trademark',
+    operator: 'Rainmaker Technology Corporation',
+    agency: 'U.S. Patent and Trademark Office',
+    notes: 'Serial No. 98828923. Stylized "R" mark for Class 42: Cloud seeding; Weather information services. Date of first use in commerce: March 1, 2023. Owner: Rainmaker Technology Corporation, 115 Eucalyptus Drive, El Segundo, CA 90245. Incorporated in Delaware. Attorney: Matthew G. Minder (Docket 3014430.7). Status: Live/Pending. No patents or patent applications found for Rainmaker — company appears to rely on trade secrets.',
+    rainmakerRelated: true,
+    lat: 33.9,
+    lng: -118.4
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  //  CONGRESSIONAL RECORDS
+  // ══════════════════════════════════════════════════════════════════════════
+  {
+    id: 'HR-4403-CLEAR-SKIES',
+    designation: 'H.R. 4403 — Clear Skies Act (Rep. Marjorie Taylor Greene)',
+    dateRange: 'Jul 15, 2025',
+    startYear: 2025,
+    activity: 'Legislation',
+    state: 'US',
+    url: 'https://www.congress.gov/bill/119th-congress/house-bill/4403/text',
+    sourceType: 'Congressional Record',
+    operator: 'Rainmaker Technology Corporation',
+    agency: 'U.S. House of Representatives',
+    notes: 'Introduced July 15, 2025, in direct response to conspiracy theories linking Rainmaker\'s July 2 cloud seeding to the Kerr County floods. Would make weather modification a federal crime: up to $100K fine + 5 years prison per violation. Repeals all existing federal weather modification authority. Referred to committee, never advanced. MTG left Congress January 2026.',
+    rainmakerRelated: true,
+    lat: 38.9,
+    lng: -77.0
+  },
+  {
+    id: 'DOGE-HEARING-2025',
+    designation: 'DOGE Subcommittee Hearing — "Playing God with the Weather"',
+    dateRange: 'Sep 16, 2025',
+    startYear: 2025,
+    activity: 'Congressional hearing',
+    state: 'US',
+    url: 'https://oversight.house.gov/release/hearing-wrap-up-subcommittee-demands-transparency-of-government-weather-and-climate-engineering/',
+    sourceType: 'Congressional Record',
+    operator: 'Rainmaker Technology Corporation',
+    agency: 'House Oversight Committee — DOGE Subcommittee',
+    notes: 'Subcommittee on DOGE held hearing on weather modification. Meteorologist Christopher Martz named Rainmaker during testimony. Rainmaker was NOT invited to testify. CEO Augustus Doricko publicly called it a "publicity stunt." Hearing demanded transparency on government weather and climate engineering programs.',
+    rainmakerRelated: true,
+    lat: 38.9,
+    lng: -77.0
+  },
+  {
+    id: 'SENATE-WEATHER-ACT-2026',
+    designation: 'Senate Weather Act Reauthorization (S. 3923) — Passed Committee',
+    dateRange: 'Mar 4, 2026',
+    startYear: 2026,
+    activity: 'Legislation',
+    state: 'US',
+    url: 'https://www.commerce.senate.gov/2026/3/cantwell-led-bipartisan-legislation-to-modernize-weather-forecasting-research-unanimously-passes-committee',
+    sourceType: 'Congressional Record',
+    operator: 'Rainmaker Technology Corporation',
+    agency: 'Senate Commerce Committee',
+    notes: 'Weather Research and Forecasting Innovation Reauthorization Act of 2026. Passed Senate Commerce Committee unanimously March 4, 2026. Creates private sector data-sharing frameworks beneficial to cloud seeding operators like Rainmaker. Introduced by bipartisan group of senators from AK, DE, HI, KS, MT, NV, TX, WA. Chaired by Sen. Ted Cruz (R-TX).',
+    rainmakerRelated: true,
+    lat: 38.9,
+    lng: -77.0
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  //  STATE LEGISLATION
+  // ══════════════════════════════════════════════════════════════════════════
+  {
+    id: 'TX-SB-2075',
+    designation: 'Texas SB 2075 — TDLR Weather Modification Advisory Board Restructuring',
+    dateRange: 'Sep 2025',
+    startYear: 2025,
+    activity: 'Legislation',
+    state: 'TX',
+    url: 'https://www.tdlr.texas.gov/weather/agendas/2025-09-22-wxm-agenda.htm',
+    sourceType: 'State Legislation',
+    operator: 'Rainmaker Technology Corporation',
+    agency: 'Texas Legislature — 89th Session',
+    notes: 'SB 2075 (89th Legislature, 2025) restructures the TDLR Weather Modification Advisory Board composition, qualifications, and terms. Passed into law September 2025. Discussed at the Sep 22, 2025 advisory board meeting alongside Rainmaker\'s FY2026 license application.',
+    rainmakerRelated: true,
+    lat: 30.3,
+    lng: -97.7
+  },
+  {
+    id: 'TX-SB-1154',
+    designation: 'Texas SB 1154 — Government Cloud Seeding Ban (Failed)',
+    dateRange: '2025',
+    startYear: 2025,
+    activity: 'Legislation',
+    state: 'TX',
+    url: 'https://capitol.texas.gov/BillLookup/History.aspx?LegSess=89R&Bill=SB1154',
+    sourceType: 'State Legislation',
+    operator: 'Rainmaker Technology Corporation',
+    agency: 'Texas Legislature — 89th Session',
+    notes: 'Proposed prohibition on governmental entities engaging in geoengineering, weather modification, and cloud seeding operations. Filed in response to the July 2025 Texas flood conspiracy theories targeting Rainmaker. Did not advance.',
+    rainmakerRelated: true,
+    lat: 30.3,
+    lng: -97.7
+  },
+  {
+    id: 'ID-SB-1064',
+    designation: 'Idaho SB 1064 — Cloud Seeding Transparency Act (Failed)',
+    dateRange: '2025',
+    startYear: 2025,
+    activity: 'Legislation',
+    state: 'ID',
+    url: 'https://legislature.idaho.gov/sessioninfo/2025/legislation/S1064/',
+    sourceType: 'State Legislation',
+    operator: 'Rainmaker Technology Corporation',
+    agency: 'Idaho Legislature',
+    notes: 'Would require annual public reporting of operational data (generator coordinates, flight paths), environmental impact info, and seeding effectiveness. Passed Senate unanimously 34-0-1 on March 20, 2025. Died in House Resources & Conservation Committee when session ended. Would have applied to all operators including Rainmaker.',
+    rainmakerRelated: true,
+    lat: 43.6,
+    lng: -116.2
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  //  FCC / SPECTRUM
+  // ══════════════════════════════════════════════════════════════════════════
+  {
+    id: 'ARRL-FCC-COMPLAINT-2025',
+    designation: 'ARRL Complaint to FCC — Rainmaker Drone Spectrum Use',
+    dateRange: 'Jan 10, 2025',
+    startYear: 2025,
+    activity: 'Regulatory complaint',
+    state: 'US',
+    url: 'https://www.arrl.org/',
+    sourceType: 'FCC Complaint',
+    operator: 'Rainmaker Technology Corporation',
+    agency: 'FCC Spectrum Enforcement Division',
+    notes: 'ARRL General Counsel Chris Imlay (W3KD) sent letter to FCC Spectrum Enforcement Division alleging Rainmaker\'s drone transmitters were operating on amateur radio spectrum without proper FCC equipment authorization. No FCC ULS wireless licenses found for Rainmaker in public database. FAA waivers prohibit FCC Experimental authorizations for sUAS operations. Enforcement investigation status unknown.',
+    rainmakerRelated: true,
+    lat: 38.9,
+    lng: -77.0
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  //  OREGON ODA — DETERMINATION LETTER (ACTUAL PDF)
+  // ══════════════════════════════════════════════════════════════════════════
+  {
+    id: 'OR-ODA-DETERMINATION-2024',
+    designation: 'Oregon ODA Determination Letter — Rainmaker License Issued',
+    dateRange: 'Nov 15, 2024',
+    startYear: 2024,
+    activity: 'State license',
+    state: 'OR',
+    url: 'https://zerogeoengineering.com/wp-content/uploads/2025/08/11.15.24-Rainmaker_Determination_Letter-1.pdf',
+    sourceType: 'State Permit',
+    operator: 'Rainmaker Technology Corporation',
+    agency: 'Oregon Department of Agriculture',
+    notes: 'Actual PDF of the ODA determination letter issuing Rainmaker a weather modification license under ORS 558. First weather modification license issued by Oregon since 1976. Obtained via public records request and published by ZeroGeoengineering.com. Authorizes UAV-based precipitation enhancement in Umatilla County.',
+    rainmakerRelated: true,
+    lat: 45.7,
+    lng: -118.8
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  //  UCAR LAWSUIT (AFFECTS RAINMAKER'S NCAR RESEARCH PARTNERSHIP)
+  // ══════════════════════════════════════════════════════════════════════════
+  {
+    id: 'UCAR-LAWSUIT-2026',
+    designation: 'UCAR Lawsuit vs. Federal Agencies — NCAR Dismantlement Challenge',
+    dateRange: 'Mar 16, 2026',
+    startYear: 2026,
+    activity: 'Litigation',
+    state: 'CO',
+    url: 'https://news.ucar.edu/133061/ucar-statement-lawsuit-filed-against-federal-administrative-agencies',
+    sourceType: 'Court Filing',
+    operator: 'Rainmaker Technology Corporation',
+    agency: 'Federal Courts / UCAR',
+    notes: 'UCAR filed suit March 16, 2026, challenging the Trump administration\'s attempt to dismantle NCAR. Directly affects Rainmaker — NCAR is conducting the $500K third-party validation study of Rainmaker\'s Bear River Basin cloud seeding effectiveness. If NCAR is dismantled, Rainmaker loses its primary independent validation partner. Trump admin accused NCAR of "left-wing climate lunacy."',
+    rainmakerRelated: true,
+    lat: 39.9,
+    lng: -105.3
   }
 ];
