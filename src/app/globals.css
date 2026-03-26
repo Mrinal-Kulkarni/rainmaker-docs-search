@@ -10,7 +10,6 @@
   --active: rgba(255, 255, 255, 0.06);
   --header-height: 60px;
   --filters-width: 320px;
-  --radius-lg: 22px;
   --radius-md: 18px;
   --radius-sm: 14px;
 }
@@ -173,12 +172,6 @@ a:focus-visible {
   white-space: nowrap;
 }
 
-.header-meta {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
 .drawer-toggle,
 .ghost-button,
 .solid-button {
@@ -271,18 +264,12 @@ a:focus-visible {
     var(--space-black);
 }
 
-.panel-heading {
-  display: grid;
-  gap: 14px;
-}
-
 .panel-kicker {
   margin: 0;
   color: var(--text-tertiary);
   font-size: 0.7rem;
 }
 
-.panel-title,
 .records-title,
 .mobile-drawer-title {
   margin: 0;
@@ -290,12 +277,6 @@ a:focus-visible {
   letter-spacing: -0.05em;
 }
 
-.panel-title {
-  font-size: clamp(2rem, 2.5vw, 2.7rem);
-  line-height: 0.96;
-}
-
-.panel-copy,
 .record-subtitle,
 .empty-state-copy,
 .detail-row dd {
@@ -593,10 +574,6 @@ a:focus-visible {
     font-size: 0.92rem;
   }
 
-  .header-caption {
-    display: none;
-  }
-
   .ops-layout {
     display: block;
     overflow: visible;
@@ -686,8 +663,7 @@ a:focus-visible {
   }
 
   .mobile-drawer .filters-panel {
-    position: static;
-    min-height: auto;
+    height: auto;
     padding: 18px;
     background: transparent;
   }

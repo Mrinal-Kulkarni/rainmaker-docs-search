@@ -1,26 +1,86 @@
 'use client';
 
-import { useState } from 'react';
-import { REPORTS, SourceType } from '../data/reports';
+import { type ReactNode, useState } from 'react';
+import { REPORTS, Report, SourceType } from '../data/reports';
 
-const ALL_OPTION = 'ALL';
-const YEAR_MIN = 2020;
-const YEAR_MAX = 2025;
+const ALL_OPTION = 'ALL' as const;
 
-const STATE_OPTIONS = [ALL_OPTION, ...Array.from(new Set(REPORTS.map((report) => report.state))).sort()];
-const SOURCE_OPTIONS: Array<typeof ALL_OPTION | SourceType> = [
-  ALL_OPTION,
-  'NOAA Report',
-  'State Permit',
-  'Government Contract',
-  'Academic Study',
+type SourceFilter = typeof ALL_OPTION | SourceType;
+type SelectFilterKey = 'state' | 'sourceType' | 'activity' | 'operator';
+
+interface Filters {
+  state: string;
+  sourceType: SourceFilter;
+  activity: string;
+  operator: string;
+  year: number;
+}
+
+interface Option {
+  value: string;
+  label: string;
+}
+
+const sortText = (left: string, right: string) => left.localeCompare(right);
+const uniq = <T,>(values: T[]) => Array.from(new Set(values));
+
+const STATE_OPTIONS = buildOptions(REPORTS.map((report) => report.state), 'All states');
+const SOURCE_OPTIONS = buildOptions(REPORTS.map((report) => report.sourceType), 'All source types');
+const ACTIVITY_OPTIONS = buildOptions(REPORTS.map((report) => report.activity), 'All activities');
+const OPERATOR_OPTIONS = buildOptions(REPORTS.map((report) => report.operator), 'All operators');
+const YEAR_OPTIONS = uniq(REPORTS.map((report) => report.startYear)).sort((left, right) => right - left);
+const DEFAULT_FILTERS: Filters = {
+  state: ALL_OPTION,
+  sourceType: ALL_OPTION,
+  activity: ALL_OPTION,
+  operator: ALL_OPTION,
+  year: YEAR_OPTIONS[0] ?? new Date().getFullYear(),
+};
+const SORTED_REPORTS = [...REPORTS].sort((left, right) => {
+  if (right.startYear !== left.startYear) {
+    return right.startYear - left.startYear;
+  }
+
+  return left.designation.localeCompare(right.designation);
+});
+const SELECT_FILTERS: ReadonlyArray<{ key: SelectFilterKey; label: string; options: Option[] }> = [
+  { key: 'state', label: 'State', options: STATE_OPTIONS },
+  { key: 'sourceType', label: 'Source type', options: SOURCE_OPTIONS },
+  { key: 'activity', label: 'Activity', options: ACTIVITY_OPTIONS },
+  { key: 'operator', label: 'Operator', options: OPERATOR_OPTIONS },
 ];
-const ACTIVITY_OPTIONS = [ALL_OPTION, ...Array.from(new Set(REPORTS.map((report) => report.activity))).sort()];
-const OPERATOR_OPTIONS = [ALL_OPTION, ...Array.from(new Set(REPORTS.map((report) => report.operator))).sort()];
-const YEAR_OPTIONS = Array.from({ length: YEAR_MAX - YEAR_MIN + 1 }, (_, index) => YEAR_MIN + index);
+
+function buildOptions(values: string[], allLabel: string): Option[] {
+  return [
+    { value: ALL_OPTION, label: allLabel },
+    ...uniq(values).sort(sortText).map((value) => ({ value, label: value })),
+  ];
+}
+
+function formatRecordCount(count: number) {
+  return `${count} record${count === 1 ? '' : 's'}`;
+}
 
 function isPdfUrl(url: string) {
   return /\.pdf(?:$|[?#])/i.test(url);
+}
+
+function matchesFilters(report: Report, filters: Filters) {
+  return (
+    (filters.state === ALL_OPTION || report.state === filters.state) &&
+    (filters.sourceType === ALL_OPTION || report.sourceType === filters.sourceType) &&
+    (filters.activity === ALL_OPTION || report.activity === filters.activity) &&
+    (filters.operator === ALL_OPTION || report.operator === filters.operator) &&
+    report.startYear <= filters.year
+  );
+}
+
+function getActiveFilterCount(filters: Filters) {
+  return Number(filters.state !== DEFAULT_FILTERS.state) +
+    Number(filters.sourceType !== DEFAULT_FILTERS.sourceType) +
+    Number(filters.activity !== DEFAULT_FILTERS.activity) +
+    Number(filters.operator !== DEFAULT_FILTERS.operator) +
+    Number(filters.year !== DEFAULT_FILTERS.year);
 }
 
 function MenuIcon() {
@@ -63,197 +123,193 @@ function ChevronIcon({ open }: { open: boolean }) {
   );
 }
 
+function SelectField({
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  options: ReadonlyArray<Option>;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <label className="filter-field">
+      <span className="filter-label">{label}</span>
+      <select value={value} onChange={(event) => onChange(event.target.value)}>
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
+function FilterPanel({
+  filters,
+  activeFilterCount,
+  onSelectChange,
+  onYearChange,
+  onReset,
+  onShowAll,
+}: {
+  filters: Filters;
+  activeFilterCount: number;
+  onSelectChange: (key: SelectFilterKey, value: string) => void;
+  onYearChange: (year: number) => void;
+  onReset: () => void;
+  onShowAll: () => void;
+}) {
+  return (
+    <div className="filters-panel">
+      <div className="filter-stack">
+        {SELECT_FILTERS.map((field) => (
+          <SelectField
+            key={field.key}
+            label={field.label}
+            value={filters[field.key]}
+            options={field.options}
+            onChange={(value) => onSelectChange(field.key, value)}
+          />
+        ))}
+
+        <SelectField
+          label="Year to"
+          value={String(filters.year)}
+          options={YEAR_OPTIONS.map((year) => ({ value: String(year), label: String(year) }))}
+          onChange={(value) => onYearChange(Number(value))}
+        />
+      </div>
+
+      <div className="filters-footer">
+        <div className="filters-status">
+          <span>
+            {activeFilterCount} active filter{activeFilterCount === 1 ? '' : 's'}
+          </span>
+        </div>
+
+        <div className="filters-actions">
+          <button type="button" className="ghost-button" onClick={onReset}>
+            Reset
+          </button>
+          <button type="button" className="solid-button" onClick={onShowAll}>
+            Show all {REPORTS.length}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function EmptyState({ children }: { children: ReactNode }) {
+  return (
+    <div className="empty-state">
+      <div className="empty-state-mark">
+        <SettingsIcon />
+      </div>
+      <p className="empty-state-copy">{children}</p>
+    </div>
+  );
+}
+
+function RecordCard({
+  report,
+  expanded,
+  onToggle,
+}: {
+  report: Report;
+  expanded: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <article className={`record-card${expanded ? ' is-expanded' : ''}`}>
+      <button type="button" className="record-trigger" onClick={onToggle} aria-expanded={expanded}>
+        <div>
+          <div className="record-meta">{`${report.state} • ${report.sourceType} • ${report.startYear}`}</div>
+          <h3 className="record-name">{report.designation}</h3>
+          <p className="record-subtitle">{`${report.dateRange} · ${report.operator}`}</p>
+        </div>
+
+        <span className="record-toggle">
+          <span>{expanded ? 'Close' : 'Open'}</span>
+          <ChevronIcon open={expanded} />
+        </span>
+      </button>
+
+      {expanded ? (
+        <div className="record-detail">
+          <dl className="record-detail-grid">
+            <div className="detail-row">
+              <dt>Agency</dt>
+              <dd>{report.agency}</dd>
+            </div>
+            <div className="detail-row">
+              <dt>Activity</dt>
+              <dd>{report.activity}</dd>
+            </div>
+            <div className="detail-row">
+              <dt>Dates</dt>
+              <dd>{report.dateRange}</dd>
+            </div>
+            <div className="detail-row">
+              <dt>Operator</dt>
+              <dd>{report.operator}</dd>
+            </div>
+            <div className="detail-row">
+              <dt>Notes</dt>
+              <dd>{report.notes ?? 'No additional notes.'}</dd>
+            </div>
+          </dl>
+
+          <a href={report.url} target="_blank" rel="noreferrer" className="record-link">
+            {isPdfUrl(report.url) ? '↗ View PDF source document' : '↗ View source document'}
+          </a>
+        </div>
+      ) : null}
+    </article>
+  );
+}
+
 export default function Home() {
-  const [logoFailed, setLogoFailed] = useState(false);
-  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
-  const [stateFilter, setStateFilter] = useState<string>(ALL_OPTION);
-  const [sourceType, setSourceType] = useState<typeof ALL_OPTION | SourceType>(ALL_OPTION);
-  const [activity, setActivity] = useState<string>(ALL_OPTION);
-  const [operator, setOperator] = useState<string>(ALL_OPTION);
-  const [yearFilter, setYearFilter] = useState(YEAR_MAX);
-  const [showAllRecords, setShowAllRecords] = useState(false);
+  const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [isArchiveVisible, setIsArchiveVisible] = useState(false);
+  const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
+  const [useLogoFallback, setUseLogoFallback] = useState(false);
 
-  const hasActiveFilters =
-    stateFilter !== ALL_OPTION ||
-    sourceType !== ALL_OPTION ||
-    activity !== ALL_OPTION ||
-    operator !== ALL_OPTION ||
-    yearFilter !== YEAR_MAX;
+  const activeFilterCount = getActiveFilterCount(filters);
+  const shouldShowRecords = isArchiveVisible || activeFilterCount > 0;
+  const filteredReports = shouldShowRecords
+    ? SORTED_REPORTS.filter((report) => matchesFilters(report, filters))
+    : [];
+  const recordCountLabel = formatRecordCount(filteredReports.length);
 
-  const activeFilterCount = [
-    stateFilter !== ALL_OPTION,
-    sourceType !== ALL_OPTION,
-    activity !== ALL_OPTION,
-    operator !== ALL_OPTION,
-    yearFilter !== YEAR_MAX,
-  ].filter(Boolean).length;
-
-  const shouldShowRecords = hasActiveFilters || showAllRecords;
-
-  const filteredReports = REPORTS.filter((report) => {
-    if (stateFilter !== ALL_OPTION && report.state !== stateFilter) {
-      return false;
-    }
-
-    if (sourceType !== ALL_OPTION && report.sourceType !== sourceType) {
-      return false;
-    }
-
-    if (activity !== ALL_OPTION && report.activity !== activity) {
-      return false;
-    }
-
-    if (operator !== ALL_OPTION && report.operator !== operator) {
-      return false;
-    }
-
-    return report.startYear <= yearFilter;
-  }).sort((left, right) => {
-    if (right.startYear !== left.startYear) {
-      return right.startYear - left.startYear;
-    }
-
-    return left.designation.localeCompare(right.designation);
-  });
-
-  const visibleRecordCount = shouldShowRecords ? filteredReports.length : 0;
-  const recordCountLabel = `${visibleRecordCount} record${visibleRecordCount === 1 ? '' : 's'}`;
-
-  function handleStateChange(value: string) {
-    setShowAllRecords(false);
+  function updateSelectFilter(key: SelectFilterKey, value: string) {
+    setFilters((current) => (current[key] === value ? current : { ...current, [key]: value }));
     setExpandedId(null);
-    setStateFilter(value);
+    setIsArchiveVisible(false);
   }
 
-  function handleSourceChange(value: typeof ALL_OPTION | SourceType) {
-    setShowAllRecords(false);
+  function updateYear(year: number) {
+    setFilters((current) => (current.year === year ? current : { ...current, year }));
     setExpandedId(null);
-    setSourceType(value);
-  }
-
-  function handleActivityChange(value: string) {
-    setShowAllRecords(false);
-    setExpandedId(null);
-    setActivity(value);
-  }
-
-  function handleOperatorChange(value: string) {
-    setShowAllRecords(false);
-    setExpandedId(null);
-    setOperator(value);
-  }
-
-  function handleYearFilterChange(value: number) {
-    setShowAllRecords(false);
-    setExpandedId(null);
-    setYearFilter(value);
+    setIsArchiveVisible(false);
   }
 
   function resetFilters() {
-    setStateFilter(ALL_OPTION);
-    setSourceType(ALL_OPTION);
-    setActivity(ALL_OPTION);
-    setOperator(ALL_OPTION);
-    setYearFilter(YEAR_MAX);
-    setShowAllRecords(false);
+    setFilters(DEFAULT_FILTERS);
     setExpandedId(null);
+    setIsArchiveVisible(false);
   }
 
-  function openAllRecords() {
-    setStateFilter(ALL_OPTION);
-    setSourceType(ALL_OPTION);
-    setActivity(ALL_OPTION);
-    setOperator(ALL_OPTION);
-    setYearFilter(YEAR_MAX);
-    setShowAllRecords(true);
+  function showAllRecords() {
+    setFilters(DEFAULT_FILTERS);
     setExpandedId(null);
-    setMobileFiltersOpen(false);
-  }
-
-  function renderFilterPanel() {
-    return (
-      <div className="filters-panel">
-        <div className="filter-stack">
-          <label className="filter-field">
-            <span className="filter-label">State</span>
-            <select value={stateFilter} onChange={(event) => handleStateChange(event.target.value)}>
-              <option value={ALL_OPTION}>All states</option>
-              {STATE_OPTIONS.filter((state) => state !== ALL_OPTION).map((state) => (
-                <option key={state} value={state}>
-                  {state}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label className="filter-field">
-            <span className="filter-label">Source type</span>
-            <select
-              value={sourceType}
-              onChange={(event) => handleSourceChange(event.target.value as typeof ALL_OPTION | SourceType)}
-            >
-              <option value={ALL_OPTION}>All source types</option>
-              {SOURCE_OPTIONS.filter((option) => option !== ALL_OPTION).map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label className="filter-field">
-            <span className="filter-label">Activity</span>
-            <select value={activity} onChange={(event) => handleActivityChange(event.target.value)}>
-              <option value={ALL_OPTION}>All activities</option>
-              {ACTIVITY_OPTIONS.filter((option) => option !== ALL_OPTION).map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label className="filter-field">
-            <span className="filter-label">Operator</span>
-            <select value={operator} onChange={(event) => handleOperatorChange(event.target.value)}>
-              <option value={ALL_OPTION}>All operators</option>
-              {OPERATOR_OPTIONS.filter((option) => option !== ALL_OPTION).map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label className="filter-field">
-            <span className="filter-label">Year to</span>
-            <select value={yearFilter} onChange={(event) => handleYearFilterChange(Number(event.target.value))}>
-              {YEAR_OPTIONS.map((year) => (
-                <option key={year} value={year}>
-                  {year}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
-
-        <div className="filters-footer">
-          <div className="filters-status">
-            <span>{activeFilterCount} active filter{activeFilterCount === 1 ? '' : 's'}</span>
-          </div>
-
-          <div className="filters-actions">
-            <button type="button" className="ghost-button" onClick={resetFilters}>
-              Reset
-            </button>
-            <button type="button" className="solid-button" onClick={openAllRecords}>
-              Show all {REPORTS.length}
-            </button>
-          </div>
-        </div>
-      </div>
-    );
+    setIsArchiveVisible(true);
+    setIsMobileFiltersOpen(false);
   }
 
   return (
@@ -263,10 +319,10 @@ export default function Home() {
           <span className="brand-mark">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={logoFailed ? '/r-logo.svg' : 'https://www.rainmaker.com/favicon.ico'}
+              src={useLogoFallback ? '/r-logo.svg' : 'https://www.rainmaker.com/favicon.ico'}
               alt="Rainmaker R"
               className="brand-mark-image"
-              onError={() => setLogoFailed(true)}
+              onError={() => setUseLogoFallback(true)}
             />
           </span>
 
@@ -276,23 +332,30 @@ export default function Home() {
           </span>
         </a>
 
-        <div className="header-meta">
-          <button
-            type="button"
-            className="drawer-toggle"
-            aria-expanded={mobileFiltersOpen}
-            aria-controls="mobile-filters"
-            onClick={() => setMobileFiltersOpen(true)}
-          >
-            <MenuIcon />
-            <span>Filters</span>
-            {activeFilterCount > 0 ? <span className="count-badge">{activeFilterCount}</span> : null}
-          </button>
-        </div>
+        <button
+          type="button"
+          className="drawer-toggle"
+          aria-expanded={isMobileFiltersOpen}
+          aria-controls="mobile-filters"
+          onClick={() => setIsMobileFiltersOpen(true)}
+        >
+          <MenuIcon />
+          <span>Filters</span>
+          {activeFilterCount > 0 ? <span className="count-badge">{activeFilterCount}</span> : null}
+        </button>
       </header>
 
       <div className="ops-layout">
-        <aside className="filters-rail">{renderFilterPanel()}</aside>
+        <aside className="filters-rail">
+          <FilterPanel
+            filters={filters}
+            activeFilterCount={activeFilterCount}
+            onSelectChange={updateSelectFilter}
+            onYearChange={updateYear}
+            onReset={resetFilters}
+            onShowAll={showAllRecords}
+          />
+        </aside>
 
         <section className="records-shell" aria-label="Records">
           <div className="records-header">
@@ -309,84 +372,31 @@ export default function Home() {
 
           <div className="records-body">
             {!shouldShowRecords ? (
-              <div className="empty-state">
-                <div className="empty-state-mark">
-                  <SettingsIcon />
-                </div>
-                <p className="empty-state-copy">
+              <EmptyState>
+                <>
                   Use the Filters panel to search
                   <br />
                   Rainmaker&apos;s publicly available government records
-                </p>
-              </div>
+                </>
+              </EmptyState>
             ) : filteredReports.length === 0 ? (
-              <div className="empty-state">
-                <div className="empty-state-mark">
-                  <SettingsIcon />
-                </div>
-                <p className="empty-state-copy">
+              <EmptyState>
+                <>
                   No records match the current filters.
                   <br />
                   Reset the panel or loosen a filter.
-                </p>
-              </div>
+                </>
+              </EmptyState>
             ) : (
               <div className="records-list">
-                {filteredReports.map((report) => {
-                  const expanded = expandedId === report.id;
-                  return (
-                    <article key={report.id} className={`record-card${expanded ? ' is-expanded' : ''}`}>
-                      <button
-                        type="button"
-                        className="record-trigger"
-                        onClick={() => setExpandedId(expanded ? null : report.id)}
-                        aria-expanded={expanded}
-                      >
-                        <div>
-                          <div className="record-meta">{`${report.state} • ${report.sourceType} • ${report.startYear}`}</div>
-                          <h3 className="record-name">{report.designation}</h3>
-                          <p className="record-subtitle">{`${report.dateRange} · ${report.operator}`}</p>
-                        </div>
-
-                        <span className="record-toggle">
-                          <span>{expanded ? 'Close' : 'Open'}</span>
-                          <ChevronIcon open={expanded} />
-                        </span>
-                      </button>
-
-                      {expanded ? (
-                        <div className="record-detail">
-                          <dl className="record-detail-grid">
-                            <div className="detail-row">
-                              <dt>Agency</dt>
-                              <dd>{report.agency}</dd>
-                            </div>
-                            <div className="detail-row">
-                              <dt>Activity</dt>
-                              <dd>{report.activity}</dd>
-                            </div>
-                            <div className="detail-row">
-                              <dt>Dates</dt>
-                              <dd>{report.dateRange}</dd>
-                            </div>
-                            <div className="detail-row">
-                              <dt>Operator</dt>
-                              <dd>{report.operator}</dd>
-                            </div>
-                            <div className="detail-row">
-                              <dt>Notes</dt>
-                              <dd>{report.notes ?? 'No additional notes.'}</dd>
-                            </div>
-                          </dl>
-
-                          <a href={report.url} target="_blank" rel="noreferrer" className="record-link">
-                            {isPdfUrl(report.url) ? '↗ View PDF source document' : '↗ View source document'}
-                          </a>
-                        </div>
-                      ) : null}
-                    </article>
-                  );
-                })}
+                {filteredReports.map((report) => (
+                  <RecordCard
+                    key={report.id}
+                    report={report}
+                    expanded={expandedId === report.id}
+                    onToggle={() => setExpandedId((current) => (current === report.id ? null : report.id))}
+                  />
+                ))}
               </div>
             )}
           </div>
@@ -394,15 +404,15 @@ export default function Home() {
       </div>
 
       <div
-        className={`drawer-backdrop${mobileFiltersOpen ? ' is-visible' : ''}`}
-        onClick={() => setMobileFiltersOpen(false)}
+        className={`drawer-backdrop${isMobileFiltersOpen ? ' is-visible' : ''}`}
+        onClick={() => setIsMobileFiltersOpen(false)}
         aria-hidden="true"
       />
 
       <aside
         id="mobile-filters"
-        className={`mobile-drawer${mobileFiltersOpen ? ' is-open' : ''}`}
-        aria-hidden={!mobileFiltersOpen}
+        className={`mobile-drawer${isMobileFiltersOpen ? ' is-open' : ''}`}
+        aria-hidden={!isMobileFiltersOpen}
       >
         <div className="mobile-drawer-header">
           <div>
@@ -411,13 +421,22 @@ export default function Home() {
           </div>
           <div className="mobile-drawer-actions">
             <span className="records-tab">{recordCountLabel}</span>
-            <button type="button" className="ghost-button" onClick={() => setMobileFiltersOpen(false)}>
+            <button type="button" className="ghost-button" onClick={() => setIsMobileFiltersOpen(false)}>
               Close
             </button>
           </div>
         </div>
 
-        <div className="mobile-drawer-body">{renderFilterPanel()}</div>
+        <div className="mobile-drawer-body">
+          <FilterPanel
+            filters={filters}
+            activeFilterCount={activeFilterCount}
+            onSelectChange={updateSelectFilter}
+            onYearChange={updateYear}
+            onReset={resetFilters}
+            onShowAll={showAllRecords}
+          />
+        </div>
       </aside>
     </div>
   );
